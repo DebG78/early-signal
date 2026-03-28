@@ -918,6 +918,208 @@ h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 600; line-height
 .animate-in.visible { opacity: 1; transform: translateY(0); }
 
 /* ═══════════════════════════════════════════
+   PERSISTENT LIVE LAYER
+   ═══════════════════════════════════════════ */
+.global-live-bar {
+  position: sticky; top: 0; z-index: 50;
+  display: flex; align-items: center; gap: 1rem;
+  padding: 0.45rem 3.5rem;
+  background: var(--bg-surface); border-bottom: 1px solid var(--border-subtle);
+  font-family: var(--font-mono); font-size: 0.58rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  overflow: hidden;
+}
+.global-live-pulse {
+  display: flex; align-items: center; gap: 0.35rem;
+  color: #22c55e; white-space: nowrap; flex-shrink: 0;
+}
+.global-live-pulse .blink {
+  width: 5px; height: 5px; border-radius: 50%; background: #22c55e;
+  box-shadow: 0 0 6px rgba(34,197,94,0.5);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+.global-live-stats {
+  display: flex; align-items: center; gap: 1rem; flex-shrink: 0;
+  color: var(--text-muted);
+}
+.global-live-stats .gl-val { color: var(--text-primary); font-weight: 500; }
+.global-live-stats .gl-sep { color: var(--border-accent); }
+.global-live-ticker-wrap {
+  flex: 1; overflow: hidden; position: relative; min-width: 0;
+  mask-image: linear-gradient(90deg, transparent, black 40px, black calc(100% - 40px), transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, black 40px, black calc(100% - 40px), transparent);
+}
+.global-live-ticker {
+  display: flex; gap: 2.5rem; white-space: nowrap;
+  animation: tickerScroll 40s linear infinite;
+  color: var(--text-secondary);
+}
+.global-live-ticker span { display: inline-flex; align-items: center; gap: 0.3rem; }
+.global-live-ticker .ticker-dot {
+  width: 3px; height: 3px; border-radius: 50%; background: var(--text-muted); flex-shrink: 0;
+}
+.global-live-ticker .ticker-highlight { color: var(--accent-teal); font-weight: 500; }
+.global-live-ticker .ticker-alert { color: var(--accent-red); font-weight: 500; }
+@keyframes tickerScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.global-live-updated {
+  flex-shrink: 0; color: var(--text-muted); white-space: nowrap;
+}
+
+/* ═══════════════════════════════════════════
+   SIGNAL RADAR — full-bleed live layout
+   ═══════════════════════════════════════════ */
+.radar-grid-live {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto;
+  gap: 0.5rem;
+}
+.radar-grid-live .radar-panel-hero {
+  grid-column: 1 / -1;
+}
+@media (max-width: 900px) { .radar-grid-live { grid-template-columns: 1fr; } }
+
+.radar-panel-live {
+  background: var(--bg-card); border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle); box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  overflow: hidden; display: flex; flex-direction: column;
+  position: relative;
+}
+.radar-panel-live.alert-border { border-color: var(--accent-red); border-width: 1px 1px 1px 3px; }
+.radar-panel-live .radar-scan-line {
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent-teal), transparent);
+  animation: radarScan 3s ease-in-out infinite;
+  opacity: 0.6;
+}
+.radar-panel-live.alert-border .radar-scan-line {
+  background: linear-gradient(90deg, transparent, var(--accent-red), transparent);
+}
+.radar-panel-live.idle-panel .radar-scan-line { display: none; }
+@keyframes radarScan {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.radar-live-body { padding: 0.75rem 0.9rem; flex: 1; }
+.radar-live-finding { font-size: 0.85rem; font-weight: 600; line-height: 1.35; margin-bottom: 0.35rem; color: var(--text-primary); }
+.radar-live-detail { font-size: 0.72rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 0.5rem; }
+.radar-live-metrics {
+  display: flex; gap: 0.75rem; flex-wrap: wrap;
+  font-family: var(--font-mono); font-size: 0.58rem;
+}
+.radar-live-metric { display: flex; flex-direction: column; gap: 0.05rem; }
+.radar-live-metric-val { font-weight: 500; color: var(--text-primary); font-size: 0.7rem; }
+.radar-live-metric-label { color: var(--text-muted); font-size: 0.48rem; text-transform: uppercase; letter-spacing: 0.06em; }
+
+.radar-live-footer {
+  padding: 0.4rem 0.9rem; border-top: 1px solid var(--border-subtle);
+  display: flex; align-items: center; justify-content: space-between;
+  font-family: var(--font-mono); font-size: 0.55rem; color: var(--text-muted);
+  background: var(--bg-primary);
+}
+.radar-live-footer .processing { color: #22c55e; animation: pulse 1.5s ease-in-out infinite; }
+.radar-live-footer .processing-alert { color: var(--accent-red); animation: pulse 1.5s ease-in-out infinite; }
+
+/* Hero radar panel — full-width top card */
+.radar-hero-body {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+  padding: 0.9rem;
+}
+.radar-hero-left { display: flex; flex-direction: column; justify-content: center; }
+.radar-hero-right {
+  display: flex; flex-direction: column; gap: 0.35rem;
+  border-left: 1px solid var(--border-subtle); padding-left: 1rem;
+}
+.radar-hero-right .log-entry { padding: 0.25rem 0; font-size: 0.62rem; border-bottom: none; }
+@media (max-width: 900px) {
+  .radar-hero-body { grid-template-columns: 1fr; }
+  .radar-hero-right { border-left: none; border-top: 1px solid var(--border-subtle); padding-left: 0; padding-top: 0.75rem; }
+}
+
+/* Data point stream animation */
+@keyframes dataPointPulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+.dp-stream {
+  display: flex; gap: 2px; align-items: center; margin-top: 0.4rem;
+}
+.dp-dot {
+  width: 3px; height: 3px; border-radius: 50%;
+  background: var(--accent-teal); opacity: 0.3;
+}
+.dp-dot.active { animation: dataPointPulse 0.8s ease-in-out infinite; }
+.dp-dot:nth-child(2).active { animation-delay: 0.1s; }
+.dp-dot:nth-child(3).active { animation-delay: 0.2s; }
+.dp-dot:nth-child(4).active { animation-delay: 0.3s; }
+.dp-dot:nth-child(5).active { animation-delay: 0.4s; }
+.dp-dot:nth-child(6).active { animation-delay: 0.5s; }
+.dp-dot:nth-child(7).active { animation-delay: 0.6s; }
+.dp-dot:nth-child(8).active { animation-delay: 0.7s; }
+
+/* ═══════════════════════════════════════════
+   RETENTION MONITOR — live risk view
+   ═══════════════════════════════════════════ */
+.retention-live-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;
+}
+.retention-live-grid .ret-full { grid-column: 1 / -1; }
+@media (max-width: 900px) { .retention-live-grid { grid-template-columns: 1fr; } }
+
+.risk-card {
+  background: var(--bg-card); border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle); overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+.risk-card.risk-high { border-left: 3px solid var(--accent-red); }
+.risk-card.risk-medium { border-left: 3px solid var(--accent-gold); }
+.risk-card.risk-low { border-left: 3px solid #22c55e; }
+.risk-card-head {
+  padding: 0.5rem 0.9rem; border-bottom: 1px solid var(--border-subtle);
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--bg-primary);
+}
+.risk-card-body { padding: 0.75rem 0.9rem; }
+.risk-person {
+  display: flex; align-items: center; gap: 0.65rem;
+  padding: 0.5rem 0; border-bottom: 1px solid var(--border-subtle);
+}
+.risk-person:last-child { border-bottom: none; }
+.risk-avatar {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono); font-size: 0.55rem; font-weight: 500;
+  flex-shrink: 0;
+}
+.risk-person-info { flex: 1; min-width: 0; }
+.risk-person-name { font-size: 0.78rem; font-weight: 500; }
+.risk-person-detail {
+  font-family: var(--font-mono); font-size: 0.58rem; color: var(--text-muted);
+  display: flex; gap: 0.4rem; flex-wrap: wrap;
+}
+.risk-score {
+  font-family: var(--font-mono); font-size: 0.62rem; font-weight: 500;
+  padding: 0.15rem 0.4rem; border-radius: 3px;
+}
+.risk-score.high { color: #fff; background: var(--accent-red); }
+.risk-score.medium { color: var(--accent-gold); background: var(--accent-gold-dim); }
+.risk-score.low { color: #22c55e; background: rgba(34,197,94,0.08); }
+
+.risk-signal-tag {
+  display: inline-flex; align-items: center; gap: 0.2rem;
+  font-family: var(--font-mono); font-size: 0.5rem;
+  padding: 0.1rem 0.35rem; border-radius: 3px;
+  text-transform: uppercase; letter-spacing: 0.04em;
+}
+.risk-signal-tag.firing { color: var(--accent-red); background: var(--accent-red-dim); }
+.risk-signal-tag.watch { color: var(--accent-gold); background: var(--accent-gold-dim); }
+.risk-signal-tag.clear { color: #22c55e; background: rgba(34,197,94,0.08); }
+
+/* ═══════════════════════════════════════════
    SCROLLBAR
    ═══════════════════════════════════════════ */
 ::-webkit-scrollbar { width: 5px; }
@@ -938,6 +1140,8 @@ h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 600; line-height
   .screen { padding: 2rem 1.5rem; }
   .stat-row { flex-wrap: wrap; gap: 1rem; }
   .stat-item { min-width: 45%; }
+  .global-live-bar { padding: 0.4rem 1.5rem; }
+  .global-live-stats { display: none; }
 }
 @media (max-width: 600px) {
   .sidebar { display: none; }
@@ -946,6 +1150,8 @@ h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 600; line-height
   .funnel-narrative { flex-direction: column; }
   .funnel-step .f-rate { display: none; }
   .agent-panel { width: 100%; max-width: 100%; }
+  .global-live-bar { padding: 0.35rem 1rem; }
+  .global-live-ticker-wrap { display: none; }
 }
 </style>
 </head>
@@ -999,6 +1205,35 @@ h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 600; line-height
 
   <!-- ═══════════ MAIN CONTENT ═══════════ -->
   <div class="main-content">
+
+    <!-- PERSISTENT LIVE LAYER -->
+    <div class="global-live-bar" id="global-live-bar">
+      <div class="global-live-pulse"><span class="blink"></span> Live</div>
+      <div class="global-live-stats">
+        <span><span class="gl-val" id="gl-agents">4</span> agents</span>
+        <span class="gl-sep">│</span>
+        <span><span class="gl-val" id="gl-signals">23</span> signals/sec</span>
+        <span class="gl-sep">│</span>
+        <span><span class="gl-val" id="gl-active">3</span> active</span>
+      </div>
+      <div class="global-live-ticker-wrap">
+        <div class="global-live-ticker" id="global-ticker">
+          <span><span class="ticker-dot"></span> <span class="ticker-alert">Interview Agent</span> flagged Derek Hollis — human approval required</span>
+          <span><span class="ticker-dot"></span> <span class="ticker-highlight">Sourcing Agent</span> identified €112K annual savings opportunity</span>
+          <span><span class="ticker-dot"></span> <span class="ticker-highlight">Onboarding Agent</span> extracting Bangalore playbook — 14 steps</span>
+          <span><span class="ticker-dot"></span> Retention Monitor ingested 527 hire records</span>
+          <span><span class="ticker-dot"></span> <span class="ticker-highlight">Pattern Engine</span> accuracy: 94% (+3pp this month)</span>
+          <span><span class="ticker-dot"></span> <span class="ticker-alert">Q4 cohort</span> showing early attrition signals — 92% vs 94% avg</span>
+          <span><span class="ticker-dot"></span> <span class="ticker-alert">Interview Agent</span> flagged Derek Hollis — human approval required</span>
+          <span><span class="ticker-dot"></span> <span class="ticker-highlight">Sourcing Agent</span> identified €112K annual savings opportunity</span>
+          <span><span class="ticker-dot"></span> <span class="ticker-highlight">Onboarding Agent</span> extracting Bangalore playbook — 14 steps</span>
+          <span><span class="ticker-dot"></span> Retention Monitor ingested 527 hire records</span>
+          <span><span class="ticker-dot"></span> <span class="ticker-highlight">Pattern Engine</span> accuracy: 94% (+3pp this month)</span>
+          <span><span class="ticker-dot"></span> <span class="ticker-alert">Q4 cohort</span> showing early attrition signals — 92% vs 94% avg</span>
+        </div>
+      </div>
+      <div class="global-live-updated" id="gl-updated">Updated 3s ago</div>
+    </div>
 
     <!-- OVERVIEW -->
     <section id="overview" class="screen active"></section>
@@ -1387,13 +1622,18 @@ function renderFunnelScreen() {
 
   return `
     <div class="page-header animate-in" style="--d:0">
-      <div class="page-eyebrow">Hiring Funnel</div>
+      <div class="page-eyebrow">Hiring Funnel · Live</div>
       <h2 class="page-title">From 8,952 to 527 — where candidates drop off</h2>
       <p class="page-subtitle">
         The overall conversion rate is <strong>5.9%</strong> from application to hire.
         The largest drop happens at screening: only <strong>${convItoI}%</strong> reach interview stage.
         Offer acceptance is strong at <strong>${convOtoH}%</strong>, driven by referral channels.
       </p>
+    </div>
+
+    <div class="live-bar animate-in" style="--d:30">
+      <div class="live-indicator"><span class="blink"></span> Pipeline active</div>
+      <div class="live-updated">Sourcing Agent monitoring ${SOURCES.length} channels · <span id="funnel-new-apps">3</span> new applications in last hour</div>
     </div>
 
     <div class="narrative-section animate-in" style="--d:80">
@@ -1463,147 +1703,179 @@ function renderActivityScreen() {
     ).join('')}</div>`;
   }
 
+  function dpStream(count, activeCount) {
+    return `<div class="dp-stream">${Array.from({length: count}, (_, i) =>
+      `<div class="dp-dot ${i < activeCount ? 'active' : ''}"></div>`
+    ).join('')}</div>`;
+  }
+
   return `
     <div class="page-header animate-in" style="--d:0">
       <div class="page-eyebrow">Signal Radar · Live</div>
       <h2 class="page-title">What agents are finding right now</h2>
     </div>
 
-    <div class="live-bar animate-in" style="--d:30">
-      <div class="live-indicator"><span class="blink"></span> 6 monitors active</div>
-      <div class="live-updated">Processing 23 signals/sec across 527 hire records</div>
-    </div>
+    <div class="radar-grid-live">
 
-    <div class="radar-grid animate-in" style="--d:60">
-
-      <!-- 1. Interviewer Quality -->
-      <div class="radar-panel alert-border">
+      <!-- HERO: Interviewer Quality — critical alert, full-width -->
+      <div class="radar-panel-live alert-border radar-panel-hero animate-in" style="--d:30">
+        <div class="radar-scan-line"></div>
         <div class="radar-head">
           <span class="radar-head-title">Interviewer Quality</span>
-          <span class="radar-status alert">⚠ Alert</span>
+          <span class="radar-status alert">⚠ Alert — Human Approval Required</span>
         </div>
-        <div class="radar-body">
-          <div class="radar-finding">Derek Hollis is actively degrading hire quality</div>
-          <div class="radar-detail">Negative performance correlation (−0.14). 59% false positive rate. Candidates he champions churn 2.4× faster than the interviewer average. Signal strengthening over last 90 days.</div>
-          <div class="radar-metrics">
-            <div class="radar-metric"><span class="radar-metric-val" style="color:var(--accent-red)">−0.14</span><span class="radar-metric-label">Perf. correlation</span></div>
-            <div class="radar-metric"><span class="radar-metric-val" style="color:var(--accent-red)">59%</span><span class="radar-metric-label">False positive</span></div>
-            <div class="radar-metric"><span class="radar-metric-val">192</span><span class="radar-metric-label">Candidates</span></div>
-            <div class="radar-metric"><span class="radar-metric-val">96%</span><span class="radar-metric-label">Confidence</span></div>
+        <div class="radar-hero-body">
+          <div class="radar-hero-left">
+            <div class="radar-live-finding">Derek Hollis is actively degrading hire quality</div>
+            <div class="radar-live-detail">Negative performance correlation (−0.14). 59% false positive rate. Candidates he champions churn 2.4× faster than the interviewer average. Signal strengthening over last 90 days.</div>
+            <div class="radar-live-metrics">
+              <div class="radar-live-metric"><span class="radar-live-metric-val" style="color:var(--accent-red)">−0.14</span><span class="radar-live-metric-label">Perf. correlation</span></div>
+              <div class="radar-live-metric"><span class="radar-live-metric-val" style="color:var(--accent-red)">59%</span><span class="radar-live-metric-label">False positive</span></div>
+              <div class="radar-live-metric"><span class="radar-live-metric-val">192</span><span class="radar-live-metric-label">Candidates</span></div>
+              <div class="radar-live-metric"><span class="radar-live-metric-val">96%</span><span class="radar-live-metric-label">Confidence</span></div>
+            </div>
+            ${dpStream(8, 8)}
+          </div>
+          <div class="radar-hero-right">
+            <div style="font-family:var(--font-mono);font-size:0.5rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.25rem">Agent Activity — Interview Restructure</div>
+            <div class="log-entry"><span class="log-time" style="width:32px">now</span><span class="log-icon">⚙</span><span class="log-msg"><strong>Drafting</strong> scorecard v2.1</span></div>
+            <div class="log-entry"><span class="log-time" style="width:32px">14s</span><span class="log-icon">✓</span><span class="log-msg"><strong>Confirmed</strong> 59% false positive rate</span></div>
+            <div class="log-entry"><span class="log-time" style="width:32px">31s</span><span class="log-icon">📊</span><span class="log-msg"><strong>Compared</strong> 8 interviewers, Derek is outlier</span></div>
+            <div class="log-entry"><span class="log-time" style="width:32px">1m</span><span class="log-icon">⚠</span><span class="log-msg"><span style="color:var(--accent-red)"><strong>Flagged</strong> — awaiting human approval</span></span></div>
+            <div style="margin-top:0.35rem">
+              <button class="intervention-btn primary action-btn" data-rec="rec-1" style="font-size:0.55rem;padding:0.25rem 0.6rem">Review Intervention →</button>
+            </div>
           </div>
         </div>
-        <div class="radar-footer">
-          <div class="agent-name"><span class="processing">●</span> Interview Restructure Agent — draft ready</div>
-          <div class="radar-strength">${strengthBars(5, true)} <span style="color:var(--accent-red)">Critical</span></div>
+        <div class="radar-live-footer">
+          <div><span class="processing-alert">●</span> Interview Restructure Agent — draft ready</div>
+          <div style="display:flex;align-items:center;gap:0.5rem">${strengthBars(5, true)} <span style="color:var(--accent-red)">Critical</span></div>
         </div>
       </div>
 
       <!-- 2. Source Channels -->
-      <div class="radar-panel">
+      <div class="radar-panel-live animate-in" style="--d:60">
+        <div class="radar-scan-line"></div>
         <div class="radar-head">
           <span class="radar-head-title">Source Channels</span>
           <span class="radar-status scanning">● Scanning</span>
         </div>
-        <div class="radar-body">
-          <div class="radar-finding">Referral hires retain at 2.1× the rate of job board hires</div>
-          <div class="radar-detail">Effect strongest in Engineering (89% vs 42% at 12 months). Agency Tier 2 costs 4.5× more per hire with 25% lower retention. Signal has strengthened for 3 consecutive months.</div>
-          <div class="radar-metrics">
-            <div class="radar-metric"><span class="radar-metric-val" style="color:var(--accent-teal)">2.1×</span><span class="radar-metric-label">Retention multiple</span></div>
-            <div class="radar-metric"><span class="radar-metric-val" style="color:var(--accent-teal)">€112K</span><span class="radar-metric-label">Savings potential</span></div>
-            <div class="radar-metric"><span class="radar-metric-val">63</span><span class="radar-metric-label">Referral hires</span></div>
-            <div class="radar-metric"><span class="radar-metric-val">94%</span><span class="radar-metric-label">Confidence</span></div>
+        <div class="radar-live-body">
+          <div class="radar-live-finding">Referral hires retain at 2.1× the rate of job board hires</div>
+          <div class="radar-live-detail">Effect strongest in Engineering (89% vs 42% at 12 months). Agency Tier 2 costs 4.5× more per hire with 25% lower retention.</div>
+          <div class="radar-live-metrics">
+            <div class="radar-live-metric"><span class="radar-live-metric-val" style="color:var(--accent-teal)">2.1×</span><span class="radar-live-metric-label">Retention multiple</span></div>
+            <div class="radar-live-metric"><span class="radar-live-metric-val" style="color:var(--accent-teal)">€112K</span><span class="radar-live-metric-label">Savings potential</span></div>
+            <div class="radar-live-metric"><span class="radar-live-metric-val">94%</span><span class="radar-live-metric-label">Confidence</span></div>
           </div>
+          ${dpStream(8, 7)}
         </div>
-        <div class="radar-footer">
-          <div class="agent-name"><span class="processing">●</span> Sourcing Optimizer — modelling ROI</div>
-          <div class="radar-strength">${strengthBars(5, false)} <span>Strong</span></div>
+        <div class="radar-live-footer">
+          <div><span class="processing">●</span> Sourcing Optimizer — modelling ROI</div>
+          <div style="display:flex;align-items:center;gap:0.5rem">${strengthBars(5, false)} <span>Strong</span></div>
         </div>
       </div>
 
       <!-- 3. Onboarding Gaps -->
-      <div class="radar-panel">
+      <div class="radar-panel-live animate-in" style="--d:90">
+        <div class="radar-scan-line"></div>
         <div class="radar-head">
           <span class="radar-head-title">Onboarding Quality</span>
           <span class="radar-status scanning">● Scanning</span>
         </div>
-        <div class="radar-body">
-          <div class="radar-finding">Structured onboarding predicts +13pp 12-month retention</div>
-          <div class="radar-detail">Bangalore (buddy program + 30/60/90 check-ins) retains at 85%. Cape Town and São Paulo, with no formal program, trail at 72% and 68%. The gap opens sharply after 6 months.</div>
-          <div class="radar-metrics">
-            <div class="radar-metric"><span class="radar-metric-val" style="color:var(--accent-teal)">+13pp</span><span class="radar-metric-label">Retention gap</span></div>
-            <div class="radar-metric"><span class="radar-metric-val">85%</span><span class="radar-metric-label">Bangalore 12mo</span></div>
-            <div class="radar-metric"><span class="radar-metric-val" style="color:var(--accent-red)">68%</span><span class="radar-metric-label">São Paulo 12mo</span></div>
-            <div class="radar-metric"><span class="radar-metric-val">87%</span><span class="radar-metric-label">Confidence</span></div>
+        <div class="radar-live-body">
+          <div class="radar-live-finding">Structured onboarding predicts +13pp 12-month retention</div>
+          <div class="radar-live-detail">Bangalore retains at 85%. Cape Town and São Paulo trail at 72% and 68%. Gap opens sharply after 6 months.</div>
+          <div class="radar-live-metrics">
+            <div class="radar-live-metric"><span class="radar-live-metric-val" style="color:var(--accent-teal)">+13pp</span><span class="radar-live-metric-label">Retention gap</span></div>
+            <div class="radar-live-metric"><span class="radar-live-metric-val" style="color:var(--accent-red)">68%</span><span class="radar-live-metric-label">São Paulo 12mo</span></div>
+            <div class="radar-live-metric"><span class="radar-live-metric-val">87%</span><span class="radar-live-metric-label">Confidence</span></div>
           </div>
+          ${dpStream(8, 6)}
         </div>
-        <div class="radar-footer">
-          <div class="agent-name"><span class="processing">●</span> Onboarding Architect — extracting playbook</div>
-          <div class="radar-strength">${strengthBars(4, false)} <span>Strong</span></div>
+        <div class="radar-live-footer">
+          <div><span class="processing">●</span> Onboarding Architect — extracting playbook</div>
+          <div style="display:flex;align-items:center;gap:0.5rem">${strengthBars(4, false)} <span>Strong</span></div>
         </div>
       </div>
 
       <!-- 4. Process Efficiency -->
-      <div class="radar-panel">
+      <div class="radar-panel-live animate-in" style="--d:120">
+        <div class="radar-scan-line"></div>
         <div class="radar-head">
           <span class="radar-head-title">Process Efficiency</span>
           <span class="radar-status stable">Monitoring</span>
         </div>
-        <div class="radar-body">
-          <div class="radar-finding">Interview rounds beyond 3 add zero predictive value</div>
-          <div class="radar-detail">Rounds 4-5 show r = 0.04 correlation with outcomes but add 11 days to time-to-hire. Engineering currently averages 4.2 rounds — 1.2 rounds of pure waste per candidate.</div>
-          <div class="radar-metrics">
-            <div class="radar-metric"><span class="radar-metric-val">0.04</span><span class="radar-metric-label">Correlation (r4-5)</span></div>
-            <div class="radar-metric"><span class="radar-metric-val">+11d</span><span class="radar-metric-label">Wasted time</span></div>
-            <div class="radar-metric"><span class="radar-metric-val">527</span><span class="radar-metric-label">Hires analysed</span></div>
-            <div class="radar-metric"><span class="radar-metric-val">91%</span><span class="radar-metric-label">Confidence</span></div>
+        <div class="radar-live-body">
+          <div class="radar-live-finding">Interview rounds beyond 3 add zero predictive value</div>
+          <div class="radar-live-detail">Rounds 4-5 add 11 days to time-to-hire with r = 0.04 correlation. Engineering averages 4.2 rounds — 1.2 rounds of waste.</div>
+          <div class="radar-live-metrics">
+            <div class="radar-live-metric"><span class="radar-live-metric-val">0.04</span><span class="radar-live-metric-label">Correlation (r4-5)</span></div>
+            <div class="radar-live-metric"><span class="radar-live-metric-val">+11d</span><span class="radar-live-metric-label">Wasted time</span></div>
+            <div class="radar-live-metric"><span class="radar-live-metric-val">91%</span><span class="radar-live-metric-label">Confidence</span></div>
           </div>
+          ${dpStream(8, 5)}
         </div>
-        <div class="radar-footer">
-          <div class="agent-name">⏳ Queued for process optimization</div>
-          <div class="radar-strength">${strengthBars(4, false)} <span>Strong</span></div>
+        <div class="radar-live-footer">
+          <div>⏳ Queued for process optimization</div>
+          <div style="display:flex;align-items:center;gap:0.5rem">${strengthBars(4, false)} <span>Strong</span></div>
         </div>
       </div>
 
-      <!-- 5. Retention Risk -->
-      <div class="radar-panel">
+      <!-- 5. Retention Risk — emerging, full-width -->
+      <div class="radar-panel-live radar-panel-hero animate-in" style="--d:150">
+        <div class="radar-scan-line"></div>
         <div class="radar-head">
           <span class="radar-head-title">Retention Risk</span>
           <span class="radar-status scanning">● Scanning</span>
         </div>
-        <div class="radar-body">
-          <div class="radar-finding">Q4 cohort showing early attrition signals</div>
-          <div class="radar-detail">Q4 2025 hires are tracking 4pp below average on 30-day retention (92% vs 94%). Commercial roles and Agency Tier 2 sourced candidates are the primary drivers. Signal still building.</div>
-          <div class="radar-metrics">
-            <div class="radar-metric"><span class="radar-metric-val" style="color:var(--accent-gold)">92%</span><span class="radar-metric-label">Q4 30d retention</span></div>
-            <div class="radar-metric"><span class="radar-metric-val">−2pp</span><span class="radar-metric-label">vs average</span></div>
-            <div class="radar-metric"><span class="radar-metric-val" id="radar-datapoints">68</span><span class="radar-metric-label">Data points</span></div>
-            <div class="radar-metric"><span class="radar-metric-val" style="color:var(--accent-gold)">72%</span><span class="radar-metric-label">Confidence</span></div>
+        <div class="radar-hero-body">
+          <div class="radar-hero-left">
+            <div class="radar-live-finding">Q4 cohort showing early attrition signals</div>
+            <div class="radar-live-detail">Q4 2025 hires tracking 4pp below average on 30-day retention (92% vs 94%). Commercial roles and Agency Tier 2 sourced candidates are the primary drivers. Signal still building — confidence increasing as more data arrives.</div>
+            <div class="radar-live-metrics">
+              <div class="radar-live-metric"><span class="radar-live-metric-val" style="color:var(--accent-gold)">92%</span><span class="radar-live-metric-label">Q4 30d retention</span></div>
+              <div class="radar-live-metric"><span class="radar-live-metric-val">−2pp</span><span class="radar-live-metric-label">vs average</span></div>
+              <div class="radar-live-metric"><span class="radar-live-metric-val" id="radar-datapoints">68</span><span class="radar-live-metric-label">Data points</span></div>
+              <div class="radar-live-metric"><span class="radar-live-metric-val" style="color:var(--accent-gold)">72%</span><span class="radar-live-metric-label">Confidence</span></div>
+            </div>
+            ${dpStream(8, 4)}
+          </div>
+          <div class="radar-hero-right">
+            <div style="font-family:var(--font-mono);font-size:0.5rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.25rem">Signal Strength — Building</div>
+            <div style="display:flex;gap:0.75rem;margin-bottom:0.4rem">
+              <div class="radar-live-metric"><span class="radar-live-metric-val">Week 1</span><span class="radar-live-metric-label">54% conf.</span></div>
+              <div class="radar-live-metric"><span class="radar-live-metric-val">Week 2</span><span class="radar-live-metric-label">63% conf.</span></div>
+              <div class="radar-live-metric"><span class="radar-live-metric-val" style="color:var(--accent-gold)">Week 3</span><span class="radar-live-metric-label">72% conf.</span></div>
+            </div>
+            <div style="font-family:var(--font-mono);font-size:0.6rem;color:var(--text-secondary);line-height:1.5">Agent will trigger intervention at <strong style="color:var(--text-primary)">85% confidence</strong>. Estimated <span style="color:var(--accent-gold)">~8 days</span> at current data velocity.</div>
           </div>
         </div>
-        <div class="radar-footer">
-          <div class="agent-name"><span class="processing">●</span> Retention Monitor — building signal</div>
-          <div class="radar-strength">${strengthBars(3, false)} <span>Emerging</span></div>
+        <div class="radar-live-footer">
+          <div><span class="processing">●</span> Retention Monitor — building signal</div>
+          <div style="display:flex;align-items:center;gap:0.5rem">${strengthBars(3, false)} <span>Emerging</span></div>
         </div>
       </div>
 
       <!-- 6. Geographic Variance -->
-      <div class="radar-panel">
+      <div class="radar-panel-live idle-panel animate-in" style="--d:180">
+        <div class="radar-scan-line"></div>
         <div class="radar-head">
           <span class="radar-head-title">Geographic Variance</span>
           <span class="radar-status idle">Idle</span>
         </div>
-        <div class="radar-body">
-          <div class="radar-finding">No new geographic anomalies detected</div>
-          <div class="radar-detail">All 5 offices tracking within expected variance bands. Amsterdam showing slight uptick in 90-day retention (+2pp). Next full scan scheduled in 12 minutes.</div>
-          <div class="radar-metrics">
-            <div class="radar-metric"><span class="radar-metric-val">5</span><span class="radar-metric-label">Offices</span></div>
-            <div class="radar-metric"><span class="radar-metric-val" style="color:#22c55e">Normal</span><span class="radar-metric-label">Variance</span></div>
-            <div class="radar-metric"><span class="radar-metric-val" id="radar-scan-timer">12m</span><span class="radar-metric-label">Next scan</span></div>
+        <div class="radar-live-body">
+          <div class="radar-live-finding">No new geographic anomalies detected</div>
+          <div class="radar-live-detail">All 5 offices within expected variance. Amsterdam showing slight uptick in 90-day retention (+2pp).</div>
+          <div class="radar-live-metrics">
+            <div class="radar-live-metric"><span class="radar-live-metric-val">5</span><span class="radar-live-metric-label">Offices</span></div>
+            <div class="radar-live-metric"><span class="radar-live-metric-val" style="color:#22c55e">Normal</span><span class="radar-live-metric-label">Variance</span></div>
+            <div class="radar-live-metric"><span class="radar-live-metric-val" id="radar-scan-timer">12m</span><span class="radar-live-metric-label">Next scan</span></div>
           </div>
         </div>
-        <div class="radar-footer">
-          <div class="agent-name">⏸ Geographic Agent — idle until next scan</div>
-          <div class="radar-strength">${strengthBars(1, false)} <span>Low</span></div>
+        <div class="radar-live-footer">
+          <div>⏸ Geographic Agent — idle until next scan</div>
+          <div style="display:flex;align-items:center;gap:0.5rem">${strengthBars(1, false)} <span>Low</span></div>
         </div>
       </div>
 
@@ -1612,167 +1884,228 @@ function renderActivityScreen() {
 }
 
 function renderRetentionScreen() {
-  const retData = [
-    { stage: '30-day', rate: '94%', count: 495, lost: 32,
-      note: 'Early exits are rare — mostly role mismatches caught in the first week.',
-      deepDive: `<p class="detail-narrative">Of the <strong>32 people who left within 30 days</strong>, the primary drivers cluster around role clarity and hiring speed. These are preventable losses.</p>
-        <table class="cohort-table">
-          <thead><tr><th>Exit Reason</th><th>Count</th><th>% of 30-Day Exits</th><th>Most Affected</th></tr></thead>
-          <tbody>
-            <tr><td style="font-weight:500">Role mismatch — expectations vs reality</td><td>14</td><td class="warn">44%</td><td>Commercial, Operations</td></tr>
-            <tr><td style="font-weight:500">Accepted a counter-offer from previous employer</td><td>8</td><td>25%</td><td>Engineering</td></tr>
-            <tr><td style="font-weight:500">Cultural fit — working style misalignment</td><td>6</td><td>19%</td><td>Product</td></tr>
-            <tr><td style="font-weight:500">Relocation fell through</td><td>4</td><td>12%</td><td>São Paulo, Cape Town</td></tr>
-          </tbody>
-        </table>
-        <p class="detail-narrative" style="margin-top:1rem"><strong>Key insight:</strong> Role mismatch accounts for nearly half of 30-day exits. Hires sourced through Agency Tier 2 are 3.2× more likely to exit in the first 30 days, suggesting weaker role briefing from those agencies.</p>
-        <table class="cohort-table" style="margin-top:0.75rem">
-          <thead><tr><th>Source Channel</th><th>30-Day Exit Rate</th><th>Exits</th></tr></thead>
-          <tbody>
-            <tr><td style="font-weight:500">Agency (Tier 2)</td><td class="warn">12%</td><td>6</td></tr>
-            <tr><td style="font-weight:500">LinkedIn job post</td><td>7%</td><td>9</td></tr>
-            <tr><td style="font-weight:500">Direct / careers page</td><td>6%</td><td>6</td></tr>
-            <tr><td style="font-weight:500">Agency (Tier 1)</td><td>5%</td><td>4</td></tr>
-            <tr><td style="font-weight:500">LinkedIn referral</td><td class="highlight">3%</td><td>3</td></tr>
-            <tr><td style="font-weight:500">Internal referral</td><td class="highlight">2%</td><td>2</td></tr>
-          </tbody>
-        </table>`
-    },
-    { stage: '90-day', rate: '87%', count: 458, lost: 37,
-      note: 'The first real drop-off. Candidates from Agency Tier 2 disproportionately exit here.',
-      deepDive: `<p class="detail-narrative"><strong>37 hires exited between day 30 and day 90.</strong> This is where onboarding quality and manager relationship start to matter. The data shows two clear risk factors.</p>
-        <table class="cohort-table">
-          <thead><tr><th>Risk Factor</th><th>90-Day Retention With</th><th>90-Day Retention Without</th><th>Δ</th></tr></thead>
-          <tbody>
-            <tr><td style="font-weight:500">Assigned onboarding buddy</td><td class="highlight">93%</td><td class="warn">79%</td><td class="highlight">+14pp</td></tr>
-            <tr><td style="font-weight:500">Manager 1:1 in first week</td><td class="highlight">91%</td><td class="warn">76%</td><td class="highlight">+15pp</td></tr>
-            <tr><td style="font-weight:500">Completed role orientation</td><td>90%</td><td>82%</td><td>+8pp</td></tr>
-            <tr><td style="font-weight:500">Met cross-functional peers (3+)</td><td>89%</td><td>84%</td><td>+5pp</td></tr>
-          </tbody>
-        </table>
-        <p class="detail-narrative" style="margin-top:1rem"><strong>By role family</strong>, Commercial shows the weakest 90-day retention — driven by higher performance expectations and shorter ramp time.</p>
-        <table class="cohort-table" style="margin-top:0.75rem">
-          <thead><tr><th>Role Family</th><th>90-Day Retention</th><th>Exits (30–90d)</th><th>Top Exit Reason</th></tr></thead>
-          <tbody>
-            <tr><td style="font-weight:500">Engineering</td><td class="highlight">91%</td><td>8</td><td>Tooling/tech stack mismatch</td></tr>
-            <tr><td style="font-weight:500">Product</td><td>88%</td><td>7</td><td>Scope ambiguity</td></tr>
-            <tr><td style="font-weight:500">Operations</td><td>85%</td><td>6</td><td>Manager relationship</td></tr>
-            <tr><td style="font-weight:500">Commercial</td><td class="warn">81%</td><td>14</td><td>Missed targets / ramp pressure</td></tr>
-          </tbody>
-        </table>`
-    },
-    { stage: '6-month', rate: '79%', count: 416, lost: 42,
-      note: 'Onboarding quality becomes visible. Offices with structured check-ins retain 8 more points.',
-      deepDive: `<p class="detail-narrative"><strong>42 people left between 90 days and 6 months.</strong> This is where interviewer quality and location-specific onboarding infrastructure become the dominant predictors.</p>
-        <table class="cohort-table">
-          <thead><tr><th>Factor</th><th>6-Mo Retention (With)</th><th>6-Mo Retention (Without)</th><th>Δ</th></tr></thead>
-          <tbody>
-            <tr><td style="font-weight:500">Passed by high-validity interviewer (score 75+)</td><td class="highlight">88%</td><td class="warn">71%</td><td class="highlight">+17pp</td></tr>
-            <tr><td style="font-weight:500">Office has 30/60/90 check-in program</td><td class="highlight">86%</td><td class="warn">72%</td><td class="highlight">+14pp</td></tr>
-            <tr><td style="font-weight:500">Referral source (LinkedIn or internal)</td><td class="highlight">85%</td><td>76%</td><td>+9pp</td></tr>
-            <tr><td style="font-weight:500">3 or fewer interview rounds</td><td>82%</td><td>80%</td><td>+2pp</td></tr>
-          </tbody>
-        </table>
-        <p class="detail-narrative" style="margin-top:1rem"><strong>Location is a strong signal at this stage.</strong> The gap between best and worst office widens from 5pp at 90 days to 16pp at 6 months.</p>
-        <table class="cohort-table" style="margin-top:0.75rem">
-          <thead><tr><th>Location</th><th>90-Day</th><th>6-Month</th><th>Drop-off</th></tr></thead>
-          <tbody>
-            <tr><td style="font-weight:500">🇮🇳 Bangalore</td><td>93%</td><td class="highlight">89%</td><td>−4pp</td></tr>
-            <tr><td style="font-weight:500">🇬🇧 London</td><td>89%</td><td>85%</td><td>−4pp</td></tr>
-            <tr><td style="font-weight:500">🇳🇱 Amsterdam</td><td>87%</td><td>82%</td><td>−5pp</td></tr>
-            <tr><td style="font-weight:500">🇿🇦 Cape Town</td><td>83%</td><td class="warn">76%</td><td class="warn">−7pp</td></tr>
-            <tr><td style="font-weight:500">🇧🇷 São Paulo</td><td>81%</td><td class="warn">73%</td><td class="warn">−8pp</td></tr>
-          </tbody>
-        </table>`
-    },
-    { stage: '12-month', rate: '74%', count: 390, lost: 26,
-      note: 'The true test. Source channel and interviewer quality are the strongest predictors at this stage.',
-      deepDive: `<p class="detail-narrative"><strong>26 more hires left between 6 and 12 months.</strong> At this stage, the initial hiring signals have fully played out. The data reveals which factors had lasting predictive power — and which were noise.</p>
-        <table class="cohort-table">
-          <thead><tr><th>Predictor</th><th>Predictive Strength (12mo)</th><th>Actionable?</th></tr></thead>
-          <tbody>
-            <tr><td style="font-weight:500">Interviewer validity score</td><td class="highlight">Strong (r = 0.71)</td><td class="highlight">Yes — panel restructure</td></tr>
-            <tr><td style="font-weight:500">Source channel</td><td class="highlight">Strong (r = 0.64)</td><td class="highlight">Yes — budget reallocation</td></tr>
-            <tr><td style="font-weight:500">Onboarding completion score</td><td>Moderate (r = 0.52)</td><td class="highlight">Yes — standardise onboarding</td></tr>
-            <tr><td style="font-weight:500">Office location</td><td>Moderate (r = 0.48)</td><td>Partially — replicate playbooks</td></tr>
-            <tr><td style="font-weight:500">Role family</td><td>Weak (r = 0.23)</td><td>Limited</td></tr>
-            <tr><td style="font-weight:500">Number of interview rounds (>3)</td><td class="warn">None (r = 0.04)</td><td class="warn">Yes — stop doing it</td></tr>
-          </tbody>
-        </table>
-        <p class="detail-narrative" style="margin-top:1rem"><strong>The strongest combination:</strong> hires sourced via referral, interviewed by a high-validity interviewer, and onboarded in an office with structured check-ins retain at <strong style="color:var(--accent-teal)">94% at 12 months</strong>. Hires with none of these three factors retain at just <strong style="color:var(--accent-red)">48%</strong>.</p>
-        <table class="cohort-table" style="margin-top:0.75rem">
-          <thead><tr><th>Factors Present</th><th>Hires</th><th>12-Month Retention</th></tr></thead>
-          <tbody>
-            <tr><td style="font-weight:500">All 3 (referral + strong interviewer + structured onboarding)</td><td>89</td><td class="highlight">94%</td></tr>
-            <tr><td style="font-weight:500">2 of 3</td><td>178</td><td>81%</td></tr>
-            <tr><td style="font-weight:500">1 of 3</td><td>196</td><td>67%</td></tr>
-            <tr><td style="font-weight:500">None</td><td>64</td><td class="warn">48%</td></tr>
-          </tbody>
-        </table>`
-    },
+  const atRiskHires = [
+    { name: 'Thabo Ndlovu', initials: 'TN', role: 'Commercial', location: 'Cape Town', flag: '🇿🇦', day: 22, riskScore: 87, signals: ['No buddy assigned', 'Agency Tier 2 source', 'No manager 1:1'], color: 'hsl(15, 45%, 88%)' },
+    { name: 'Lucas Santos', initials: 'LS', role: 'Operations', location: 'São Paulo', flag: '🇧🇷', day: 41, riskScore: 79, signals: ['No 30-day check-in', 'Low onboarding score (52/100)'], color: 'hsl(200, 45%, 88%)' },
+    { name: 'Naledi Dlamini', initials: 'ND', role: 'Commercial', location: 'Cape Town', flag: '🇿🇦', day: 67, riskScore: 74, signals: ['Interviewer: Derek Hollis', 'No buddy assigned'], color: 'hsl(280, 45%, 88%)' },
+    { name: 'Ana Ferreira', initials: 'AF', role: 'Engineering', location: 'São Paulo', flag: '🇧🇷', day: 58, riskScore: 68, signals: ['Agency Tier 2 source', 'Below-average ramp'], color: 'hsl(340, 45%, 88%)' },
+    { name: 'Derek van der Merwe', initials: 'DM', role: 'Product', location: 'Cape Town', flag: '🇿🇦', day: 84, riskScore: 63, signals: ['No 60-day check-in'], color: 'hsl(120, 45%, 88%)' },
   ];
+
+  const watchList = [
+    { name: 'Camila Oliveira', initials: 'CO', role: 'Engineering', location: 'São Paulo', flag: '🇧🇷', day: 35, riskScore: 44, signals: ['No buddy assigned'], color: 'hsl(50, 45%, 88%)' },
+    { name: 'Bram Visser', initials: 'BV', role: 'Product', location: 'Amsterdam', flag: '🇳🇱', day: 19, riskScore: 38, signals: ['4 interview rounds'], color: 'hsl(160, 45%, 88%)' },
+    { name: 'Kagiso Molefe', initials: 'KM', role: 'Operations', location: 'Cape Town', flag: '🇿🇦', day: 52, riskScore: 35, signals: ['No 30-day check-in completed'], color: 'hsl(220, 45%, 88%)' },
+  ];
+
   return `
     <div class="page-header animate-in" style="--d:0">
-      <div class="page-eyebrow">Retention</div>
-      <h2 class="page-title">From 527 hires, 390 remain at 12 months</h2>
-      <p class="page-subtitle">
-        Retention drops are not random. They cluster around specific source channels,
-        interviewers, and locations. Click any stage to see <strong>what's driving attrition</strong> at that milestone.
-      </p>
+      <div class="page-eyebrow">Retention Monitor · Live</div>
+      <h2 class="page-title">Who's at risk right now</h2>
     </div>
 
-    <div class="narrative-section animate-in" style="--d:80">
-      <div class="section-label">Retention Cascade</div>
-      ${retData.map((d, i) => `
-      <div class="card retention-card" style="margin-bottom:0.75rem;cursor:pointer" data-retention="${i}">
-        <div style="display:flex;align-items:baseline;gap:1rem;margin-bottom:0.4rem">
-          <span style="font-family:var(--font-mono);font-size:1.3rem;font-weight:500;color:${d.rate === '74%' ? 'var(--accent-gold)' : 'var(--text-primary)'}">${d.rate}</span>
-          <span style="font-family:var(--font-mono);font-size:0.65rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em">${d.stage} retention</span>
-          <span style="font-family:var(--font-mono);font-size:0.65rem;color:var(--text-muted)">${d.count} of 527</span>
-          <span style="font-family:var(--font-mono);font-size:0.65rem;color:var(--accent-red);margin-left:auto">−${d.lost} lost</span>
+    <div class="animate-in" style="--d:30">
+      <div class="dash-ticker">
+        <div class="ticker-item"><span class="ticker-label">Monitoring</span> <span class="ticker-val">527</span></div>
+        <span class="ticker-sep">│</span>
+        <div class="ticker-item"><span class="ticker-label">At Risk</span> <span class="ticker-val ticker-down">5</span></div>
+        <span class="ticker-sep">│</span>
+        <div class="ticker-item"><span class="ticker-label">Watch</span> <span class="ticker-val" style="color:var(--accent-gold)">3</span></div>
+        <span class="ticker-sep">│</span>
+        <div class="ticker-item"><span class="ticker-label">30d Ret.</span> <span class="ticker-val">94%</span></div>
+        <span class="ticker-sep">│</span>
+        <div class="ticker-item"><span class="ticker-label">90d Ret.</span> <span class="ticker-val">87%</span></div>
+        <span class="ticker-sep">│</span>
+        <div class="ticker-item"><span class="ticker-label">12m Ret.</span> <span class="ticker-val ticker-down">74%</span></div>
+        <span class="ticker-sep">│</span>
+        <div class="ticker-item"><span class="ticker-label">Signals Firing</span> <span class="ticker-val ticker-down" id="ret-signals-count">12</span></div>
+        <span class="ticker-sep">│</span>
+        <div class="ticker-item"><span class="ticker-label">Agent</span> <span class="ticker-val ticker-up">● Active</span></div>
+      </div>
+    </div>
+
+    <div class="retention-live-grid">
+
+      <!-- At-Risk Hires — full width -->
+      <div class="risk-card risk-high ret-full animate-in" style="--d:60">
+        <div class="risk-card-head">
+          <span class="dash-panel-title" style="color:var(--accent-red)">⚠ At-Risk Hires — Immediate Attention</span>
+          <span class="dash-panel-badge" style="color:#fff;background:var(--accent-red);animation:urgentPulse 2s ease-in-out infinite">${atRiskHires.length} flagged</span>
         </div>
-        <p style="font-size:0.82rem;color:var(--text-secondary);line-height:1.5">${d.note}</p>
-        <div class="insight-expand-hint">See what's driving this →</div>
-        <div class="insight-detail">${d.deepDive}</div>
-      </div>`).join('')}
-    </div>
+        <div class="risk-card-body">
+          ${atRiskHires.map(h => `
+          <div class="risk-person">
+            <div class="risk-avatar" style="background:${h.color}">${h.initials}</div>
+            <div class="risk-person-info">
+              <div class="risk-person-name">${h.name}</div>
+              <div class="risk-person-detail">
+                <span>${h.flag} ${h.location}</span><span>·</span>
+                <span>${h.role}</span><span>·</span>
+                <span>Day ${h.day}</span>
+              </div>
+              <div style="display:flex;gap:0.3rem;flex-wrap:wrap;margin-top:0.25rem">
+                ${h.signals.map(s => `<span class="risk-signal-tag firing">● ${s}</span>`).join('')}
+              </div>
+            </div>
+            <div class="risk-score high">${h.riskScore}%</div>
+          </div>`).join('')}
+        </div>
+      </div>
 
-    <div class="narrative-section animate-in" style="--d:160">
-      <div class="section-label">Retention by Location</div>
-      <table class="cohort-table">
-        <thead><tr><th>Location</th><th>12-Month Retention</th><th>Relative to Average</th></tr></thead>
-        <tbody>
-        ${[...LOCATIONS].sort((a,b) => b.retention12m - a.retention12m).map(l => {
-          const avg = 0.74;
-          const diff = ((l.retention12m - avg) * 100).toFixed(0);
-          const sign = diff > 0 ? '+' : '';
-          return `<tr>
-            <td style="color:var(--text-primary);font-weight:500">${l.flag} ${l.city}</td>
-            <td class="${l.retention12m >= 0.82 ? 'highlight' : l.retention12m < 0.72 ? 'warn' : ''}">${(l.retention12m*100).toFixed(0)}%</td>
-            <td class="${diff > 0 ? 'highlight' : diff < 0 ? 'warn' : ''}">${sign}${diff}pp</td>
-          </tr>`;
-        }).join('')}
-        </tbody>
-      </table>
-    </div>
+      <!-- Watch List -->
+      <div class="risk-card risk-medium animate-in" style="--d:90">
+        <div class="risk-card-head">
+          <span class="dash-panel-title" style="color:var(--accent-gold)">Watch List</span>
+          <span class="dash-panel-badge" style="color:var(--accent-gold);background:var(--accent-gold-dim)">${watchList.length} monitoring</span>
+        </div>
+        <div class="risk-card-body">
+          ${watchList.map(h => `
+          <div class="risk-person">
+            <div class="risk-avatar" style="background:${h.color}">${h.initials}</div>
+            <div class="risk-person-info">
+              <div class="risk-person-name">${h.name}</div>
+              <div class="risk-person-detail">
+                <span>${h.flag} ${h.location}</span><span>·</span>
+                <span>${h.role}</span><span>·</span>
+                <span>Day ${h.day}</span>
+              </div>
+              <div style="display:flex;gap:0.3rem;flex-wrap:wrap;margin-top:0.25rem">
+                ${h.signals.map(s => `<span class="risk-signal-tag watch">◉ ${s}</span>`).join('')}
+              </div>
+            </div>
+            <div class="risk-score medium">${h.riskScore}%</div>
+          </div>`).join('')}
+        </div>
+      </div>
 
-    <div class="narrative-section animate-in" style="--d:240">
-      <div class="section-label">Quarterly Cohorts</div>
-      <table class="cohort-table">
-        <thead><tr><th>Quarter</th><th>Apps</th><th>Hires</th><th>30d</th><th>90d</th><th>6mo</th><th>12mo</th></tr></thead>
-        <tbody>
-        ${[
-          { q:'Q1 2025', apps: monthlyApps.slice(0,3).reduce((a,b)=>a+b,0), hires: monthlyHires.slice(0,3).reduce((a,b)=>a+b,0), r:['96%','90%','83%','78%'] },
-          { q:'Q2 2025', apps: monthlyApps.slice(3,6).reduce((a,b)=>a+b,0), hires: monthlyHires.slice(3,6).reduce((a,b)=>a+b,0), r:['93%','86%','78%','73%'] },
-          { q:'Q3 2025', apps: monthlyApps.slice(6,9).reduce((a,b)=>a+b,0), hires: monthlyHires.slice(6,9).reduce((a,b)=>a+b,0), r:['95%','89%','81%','76%'] },
-          { q:'Q4 2025', apps: monthlyApps.slice(9,12).reduce((a,b)=>a+b,0), hires: monthlyHires.slice(9,12).reduce((a,b)=>a+b,0), r:['92%','84%','74%','68%'] },
-        ].map(q => `<tr>
-          <td>${q.q}</td><td>${q.apps.toLocaleString()}</td><td>${q.hires}</td>
-          <td class="highlight">${q.r[0]}</td><td class="highlight">${q.r[1]}</td>
-          <td>${q.r[2]}</td><td class="${parseInt(q.r[3])<72?'warn':''}">${q.r[3]}</td>
-        </tr>`).join('')}
-        </tbody>
-      </table>
+      <!-- Agent Activity -->
+      <div class="dash-panel animate-in" style="--d:120">
+        <div class="dash-panel-head">
+          <span class="dash-panel-title">Retention Agent Activity</span>
+          <span class="dash-panel-badge" style="color:#22c55e;background:rgba(34,197,94,0.08)">● streaming</span>
+        </div>
+        <div class="dash-panel-body">
+          <div class="log-feed" id="retention-activity-log">
+            <div class="log-entry"><span class="log-time">now</span><span class="log-icon">🔍</span><span class="log-msg"><strong>Scanning</strong> Day 22 hires for buddy assignment gaps</span></div>
+            <div class="log-entry"><span class="log-time">8s</span><span class="log-icon">⚠</span><span class="log-msg"><strong>Flagged</strong> Thabo Ndlovu — 3 risk signals, score 87%</span></div>
+            <div class="log-entry"><span class="log-time">22s</span><span class="log-icon">📊</span><span class="log-msg"><strong>Updated</strong> Cape Town risk model — 3 hires above threshold</span></div>
+            <div class="log-entry"><span class="log-time">41s</span><span class="log-icon">✓</span><span class="log-msg"><strong>Confirmed</strong> São Paulo onboarding scores below benchmark</span></div>
+            <div class="log-entry"><span class="log-time">1m</span><span class="log-icon">📋</span><span class="log-msg"><strong>Drafted</strong> intervention for Naledi Dlamini — Derek Hollis flag</span></div>
+            <div class="log-entry"><span class="log-time">2m</span><span class="log-icon">📥</span><span class="log-msg"><strong>Ingested</strong> 14 new check-in records across 5 offices</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Risk by Location — full width -->
+      <div class="dash-panel ret-full animate-in" style="--d:150">
+        <div class="dash-panel-head">
+          <span class="dash-panel-title">Location Risk Heatmap</span>
+          <span class="dash-panel-badge" style="color:var(--accent-teal);background:var(--accent-teal-dim)">live</span>
+        </div>
+        <div class="dash-panel-body" style="padding:0">
+          <table class="cohort-table" style="border:none;border-radius:0">
+            <thead><tr><th>Location</th><th>Active Hires</th><th>At Risk</th><th>30d Ret.</th><th>90d Ret.</th><th>12m Ret.</th><th>Signals Firing</th><th>Agent Status</th></tr></thead>
+            <tbody>
+              <tr>
+                <td style="font-weight:500;color:var(--text-primary)">🇿🇦 Cape Town</td>
+                <td>74</td>
+                <td class="warn">3</td>
+                <td>91%</td>
+                <td>83%</td>
+                <td class="warn">72%</td>
+                <td class="warn">5 active</td>
+                <td><span style="color:var(--accent-red)">● Investigating</span></td>
+              </tr>
+              <tr>
+                <td style="font-weight:500;color:var(--text-primary)">🇧🇷 São Paulo</td>
+                <td>95</td>
+                <td class="warn">2</td>
+                <td>90%</td>
+                <td>81%</td>
+                <td class="warn">68%</td>
+                <td class="warn">4 active</td>
+                <td><span style="color:var(--accent-gold)">● Monitoring</span></td>
+              </tr>
+              <tr>
+                <td style="font-weight:500;color:var(--text-primary)">🇳🇱 Amsterdam</td>
+                <td>116</td>
+                <td>0</td>
+                <td>94%</td>
+                <td>87%</td>
+                <td>78%</td>
+                <td>1 active</td>
+                <td><span style="color:#22c55e">● Normal</span></td>
+              </tr>
+              <tr>
+                <td style="font-weight:500;color:var(--text-primary)">🇬🇧 London</td>
+                <td>137</td>
+                <td>0</td>
+                <td class="highlight">95%</td>
+                <td class="highlight">89%</td>
+                <td>82%</td>
+                <td>1 active</td>
+                <td><span style="color:#22c55e">● Normal</span></td>
+              </tr>
+              <tr>
+                <td style="font-weight:500;color:var(--text-primary)">🇮🇳 Bangalore</td>
+                <td>105</td>
+                <td>0</td>
+                <td class="highlight">97%</td>
+                <td class="highlight">93%</td>
+                <td class="highlight">85%</td>
+                <td>0</td>
+                <td><span style="color:#22c55e">● Normal</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Key Predictors -->
+      <div class="dash-panel ret-full animate-in" style="--d:180">
+        <div class="dash-panel-head">
+          <span class="dash-panel-title">Strongest Predictors — Live Model</span>
+          <span class="dash-panel-badge" style="color:var(--accent-teal);background:var(--accent-teal-dim)">r-values updating</span>
+        </div>
+        <div class="dash-panel-body" style="padding:0">
+          <table class="cohort-table" style="border:none;border-radius:0">
+            <thead><tr><th>Predictor</th><th>Strength (12mo)</th><th>Current Impact</th><th>Agent Action</th></tr></thead>
+            <tbody>
+              <tr>
+                <td style="font-weight:500;color:var(--text-primary)">Interviewer validity score</td>
+                <td class="highlight">Strong (r = 0.71)</td>
+                <td>+17pp retention when high-validity</td>
+                <td><span style="color:var(--accent-red)">● Panel restructure drafted</span></td>
+              </tr>
+              <tr>
+                <td style="font-weight:500;color:var(--text-primary)">Source channel</td>
+                <td class="highlight">Strong (r = 0.64)</td>
+                <td>Referral: 94% vs Agency T2: 48%</td>
+                <td><span style="color:var(--accent-gold)">● Budget reallocation pending</span></td>
+              </tr>
+              <tr>
+                <td style="font-weight:500;color:var(--text-primary)">Onboarding completion</td>
+                <td>Moderate (r = 0.52)</td>
+                <td>+14pp with buddy + check-ins</td>
+                <td><span style="color:#22c55e">● Playbook extraction in progress</span></td>
+              </tr>
+              <tr>
+                <td style="font-weight:500;color:var(--text-primary)">Office location</td>
+                <td>Moderate (r = 0.48)</td>
+                <td>13pp gap (Bangalore vs Cape Town)</td>
+                <td><span style="color:var(--text-muted)">Addressed via onboarding</span></td>
+              </tr>
+              <tr>
+                <td style="font-weight:500;color:var(--text-primary)">Interview rounds (>3)</td>
+                <td class="warn">None (r = 0.04)</td>
+                <td>+11d time-to-hire, no quality gain</td>
+                <td><span style="color:var(--text-muted)">⏳ Queued</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
     </div>
   `;
 }
@@ -1787,7 +2120,7 @@ function renderOnboardingScreen() {
 
   return `
     <div class="page-header animate-in" style="--d:0">
-      <div class="page-eyebrow">Onboarding & Ramp to Performance</div>
+      <div class="page-eyebrow">Onboarding & Ramp · Live</div>
       <h2 class="page-title">The first 90 days decide the next 12 months</h2>
       <p class="page-subtitle">
         Tracking onboarding completion, ramp-to-productivity, and early performance signals across
@@ -1797,7 +2130,7 @@ function renderOnboardingScreen() {
 
     <div class="live-bar animate-in" style="--d:30">
       <div class="live-indicator"><span class="blink"></span> Monitoring 527 hire journeys</div>
-      <div class="live-updated">Onboarding Agent scanning for anomalies</div>
+      <div class="live-updated">Onboarding Architect Agent scanning for anomalies · <span style="color:var(--accent-gold)">2 milestones below threshold</span></div>
     </div>
 
     <div class="animate-in" style="--d:60">
@@ -1911,13 +2244,18 @@ function renderOnboardingScreen() {
 function renderPatternsScreen() {
   return `
     <div class="page-header animate-in" style="--d:0">
-      <div class="page-eyebrow">Pattern Engine</div>
+      <div class="page-eyebrow">Pattern Engine · Live</div>
       <h2 class="page-title">Four patterns the data is telling us</h2>
       <p class="page-subtitle">
         Each pattern has been validated against 12 months of outcome data.
         Confidence is based on sample size and effect strength.
         Two patterns are immediately actionable.
       </p>
+    </div>
+
+    <div class="live-bar animate-in" style="--d:30">
+      <div class="live-indicator"><span class="blink"></span> Engine running</div>
+      <div class="live-updated">Processing 527 hire records · 4 patterns at high confidence · <span style="color:var(--accent-teal)">2 actionable</span></div>
     </div>
 
     <div class="narrative-section">
@@ -1982,13 +2320,18 @@ function renderInterviewersScreen() {
   const sorted = [...INTERVIEWERS].sort((a, b) => b.validity - a.validity);
   return `
     <div class="page-header animate-in" style="--d:0">
-      <div class="page-eyebrow">Interviewer Performance</div>
+      <div class="page-eyebrow">Interviewer Performance · Live</div>
       <h2 class="page-title">Who's predicting success — and who's adding noise</h2>
       <p class="page-subtitle">
         Each interviewer's pass decisions are tracked against 12-month retention and performance outcomes.
         Click any row to see their recent candidate results.
         <strong style="color:var(--accent-red)">One interviewer is actively degrading hire quality.</strong>
       </p>
+    </div>
+
+    <div class="live-bar animate-in" style="--d:30">
+      <div class="live-indicator"><span class="blink"></span> Tracking 8 interviewers</div>
+      <div class="live-updated">Interview Restructure Agent — <span style="color:var(--accent-red)">⚠ intervention drafted for Derek Hollis</span></div>
     </div>
 
     <div class="narrative-section animate-in" style="--d:80">
@@ -2226,7 +2569,7 @@ function renderClosedLoopScreen() {
   }
   return `
     <div class="page-header animate-in" style="--d:0">
-      <div class="page-eyebrow">Closed Loop</div>
+      <div class="page-eyebrow">Closed Loop · Live</div>
       <h2 class="page-title">The loop closes when interventions produce better data</h2>
       <p class="page-subtitle">
         Every actioned recommendation feeds outcome data back into the pattern engine.
@@ -2330,8 +2673,15 @@ function switchScreen(id) {
     animateCounters();
   }
   if (id === 'activity') startSignalStream();
+  if (id === 'retention') startRetentionLogSimulation();
   // Toggle wider layout for dashboard
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('dash-screen'));
+  if (id === 'activity') {
+    screen.classList.add('dash-screen');
+  }
+  if (id === 'retention') {
+    screen.classList.add('dash-screen');
+  }
   if (id === 'recommendations') {
     screen.classList.add('dash-screen');
     // Animate progress bars
@@ -2621,6 +2971,79 @@ function startAgentLogSimulation() {
 }
 
 
+
+
+/* ═══════════════════════════════════════════════════════════════
+   GLOBAL LIVE BAR — persistent updates
+   ═══════════════════════════════════════════════════════════════ */
+let glUpdateCounter = 3;
+setInterval(() => {
+  glUpdateCounter++;
+  if (glUpdateCounter > 25) glUpdateCounter = 1;
+  const el = document.getElementById('gl-updated');
+  if (el) el.textContent = `Updated ${glUpdateCounter}s ago`;
+}, 1000);
+
+// Fluctuate signal count
+setInterval(() => {
+  const el = document.getElementById('gl-signals');
+  if (el) {
+    const current = parseInt(el.textContent) || 23;
+    el.textContent = Math.max(18, Math.min(31, current + Math.floor(Math.random() * 5) - 2));
+  }
+}, 3000);
+
+// Retention screen — signal count + log simulation
+let retLogInterval = null;
+const RET_LOG_MESSAGES = [
+  { icon: '🔍', msg: '<strong>Scanning</strong> Day 30-60 hires for check-in gaps' },
+  { icon: '⚠', msg: '<strong>Alert:</strong> Cape Town hire missing 30-day milestone' },
+  { icon: '📊', msg: '<strong>Updated</strong> risk model — 5 hires above threshold' },
+  { icon: '✓', msg: '<strong>Confirmed</strong> Bangalore onboarding scores stable at 88' },
+  { icon: '📥', msg: '<strong>Ingested</strong> 8 new buddy assignment records' },
+  { icon: '📋', msg: '<strong>Scanning</strong> Agency Tier 2 hires for early signals' },
+  { icon: '🔍', msg: '<strong>Recalculating</strong> São Paulo risk scores with new data' },
+];
+let retLogIdx = 0;
+
+function startRetentionLogSimulation() {
+  if (retLogInterval) clearInterval(retLogInterval);
+  let retSignals = 12;
+  retLogInterval = setInterval(() => {
+    if (STATE.activeScreen !== 'retention') { clearInterval(retLogInterval); return; }
+    // Tick signal count
+    retSignals += Math.floor(Math.random() * 3);
+    const sigEl = document.getElementById('ret-signals-count');
+    if (sigEl) sigEl.textContent = retSignals;
+    // Add log entry
+    const log = document.getElementById('retention-activity-log');
+    if (!log) return;
+    const msg = RET_LOG_MESSAGES[retLogIdx % RET_LOG_MESSAGES.length];
+    retLogIdx++;
+    const entry = document.createElement('div');
+    entry.className = 'log-entry log-entry-new';
+    entry.innerHTML = `<span class="log-time">now</span><span class="log-icon">${msg.icon}</span><span class="log-msg">${msg.msg}</span>`;
+    log.insertBefore(entry, log.firstChild);
+    const entries = log.querySelectorAll('.log-entry');
+    entries.forEach((e, i) => {
+      if (i > 0) {
+        const time = e.querySelector('.log-time');
+        if (time && time.textContent === 'now') time.textContent = `${i * 6}s`;
+      }
+    });
+    if (entries.length > 10) log.removeChild(log.lastChild);
+  }, 5000);
+}
+
+// Funnel screen — new apps counter
+setInterval(() => {
+  if (STATE.activeScreen !== 'funnel') return;
+  const el = document.getElementById('funnel-new-apps');
+  if (el) {
+    const current = parseInt(el.textContent) || 3;
+    el.textContent = current + Math.floor(Math.random() * 2) + 1;
+  }
+}, 8000);
 
 
 /* ═══════════════════════════════════════════════════════════════
