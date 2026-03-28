@@ -1147,8 +1147,49 @@ h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 600; line-height
   .global-live-bar { padding: 0.4rem 1.5rem; }
   .global-live-stats { display: none; }
 }
+/* Mobile hamburger */
+.mobile-header {
+  display: none;
+  position: sticky; top: 0; z-index: 99;
+  background: var(--bg-surface); border-bottom: 1px solid var(--border-subtle);
+  padding: 0.65rem 1rem;
+  align-items: center; gap: 0.75rem;
+}
+.mobile-header h1 { font-size: 1rem; font-weight: 600; flex: 1; }
+.hamburger {
+  width: 32px; height: 32px; border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm); background: transparent;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 4px; cursor: pointer; flex-shrink: 0;
+}
+.hamburger span {
+  display: block; width: 16px; height: 2px; background: var(--text-primary);
+  border-radius: 1px; transition: all 0.2s ease;
+}
+.mobile-overlay {
+  display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.3);
+  z-index: 149; opacity: 0; transition: opacity 0.25s ease;
+}
+.mobile-overlay.open { opacity: 1; }
+
 @media (max-width: 600px) {
-  .sidebar { display: none; }
+  .sidebar {
+    position: fixed; top: 0; left: 0; bottom: 0;
+    width: 260px; z-index: 150;
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 4px 0 16px rgba(0,0,0,0.1);
+  }
+  .sidebar.mobile-open { transform: translateX(0); }
+  .sidebar .nav-label, .sidebar-brand h1, .sidebar-footer p, .live-badge { display: revert; }
+  .sidebar-brand { padding: 1.5rem 1.25rem 1rem; }
+  .nav-item { padding: 0.6rem 1.25rem; justify-content: flex-start; }
+  .nav-section-label { display: block; }
+
+  .mobile-header { display: flex; }
+  .mobile-overlay { display: block; pointer-events: none; }
+  .mobile-overlay.open { pointer-events: auto; }
+
   .main-content { margin-left: 0; }
   .screen { padding: 1.5rem 1rem; }
   .funnel-narrative { flex-direction: column; }
@@ -1156,10 +1197,34 @@ h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 600; line-height
   .agent-panel { width: 100%; max-width: 100%; }
   .global-live-bar { padding: 0.35rem 1rem; }
   .global-live-ticker-wrap { display: none; }
+  .global-live-stats { display: none; }
+
+  .stat-row { flex-wrap: wrap; gap: 0.75rem; }
+  .stat-item { min-width: 45%; }
+  .dash-grid, .dash-grid-3 { grid-template-columns: 1fr; }
+  .dash-ticker { flex-wrap: wrap; gap: 0.5rem; }
+  .dash-ticker .ticker-sep { display: none; }
+  .radar-hero-body { grid-template-columns: 1fr; }
+  .radar-hero-right { border-left: none; border-top: 1px solid var(--border-subtle); padding-left: 0; padding-top: 0.75rem; }
+  .retention-live-grid { grid-template-columns: 1fr; }
+  .cohort-table, .matrix-table { font-size: 0.6rem; }
+  .cohort-table th, .cohort-table td, .matrix-table th, .matrix-table td { padding: 0.45rem 0.5rem; }
+  .page-title { font-size: 1.35rem; }
+  .live-bar { flex-direction: column; align-items: flex-start; gap: 0.35rem; }
 }
 </style>
 </head>
 <body>
+
+<!-- MOBILE HEADER -->
+<div class="mobile-header">
+  <button class="hamburger" id="mobile-menu-btn" aria-label="Open navigation">
+    <span></span><span></span><span></span>
+  </button>
+  <h1>Early Signal</h1>
+  <div class="live-badge"><span class="live-dot"></span> Live</div>
+</div>
+<div class="mobile-overlay" id="mobile-overlay"></div>
 
 <div class="app-layout">
 
@@ -3051,11 +3116,28 @@ setInterval(() => {
 
 
 /* ═══════════════════════════════════════════════════════════════
+   MOBILE MENU
+   ═══════════════════════════════════════════════════════════════ */
+function openMobileMenu() {
+  document.querySelector('.sidebar').classList.add('mobile-open');
+  document.getElementById('mobile-overlay').classList.add('open');
+}
+function closeMobileMenu() {
+  document.querySelector('.sidebar').classList.remove('mobile-open');
+  document.getElementById('mobile-overlay').classList.remove('open');
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
    EVENT HANDLING
    ═══════════════════════════════════════════════════════════════ */
 document.addEventListener('click', (e) => {
+  // Mobile menu
+  if (e.target.closest('#mobile-menu-btn')) { openMobileMenu(); return; }
+  if (e.target.closest('#mobile-overlay')) { closeMobileMenu(); return; }
+
   const nav = e.target.closest('.nav-item');
-  if (nav) { e.preventDefault(); switchScreen(nav.dataset.screen); return; }
+  if (nav) { e.preventDefault(); switchScreen(nav.dataset.screen); closeMobileMenu(); return; }
 
   // Date range picker
   const dateBtn = e.target.closest('.date-range-btn');
