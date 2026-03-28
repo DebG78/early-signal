@@ -1212,6 +1212,141 @@ h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 600; line-height
   .page-title { font-size: 1.35rem; }
   .live-bar { flex-direction: column; align-items: flex-start; gap: 0.35rem; }
 }
+
+/* ═══════════════════════════════════════════
+   THRIVE & PROCESS QUALITY STYLES
+   ═══════════════════════════════════════════ */
+.watchlist-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 0.75rem;
+}
+.risk-card {
+  padding: 1rem 1.25rem;
+}
+.risk-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.risk-score-badge {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.25rem 0.6rem;
+  border-radius: var(--radius-sm);
+}
+.risk-factors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.5rem;
+}
+.risk-factor-tag {
+  font-size: 0.68rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 20px;
+  background: var(--accent-red-dim);
+  color: var(--accent-red);
+  white-space: nowrap;
+}
+.watch-card {
+  border-left: 2px solid var(--border-subtle);
+}
+
+/* Factor heatmap bars */
+.factor-heatmap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.factor-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.factor-bar-label {
+  width: 160px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  flex-shrink: 0;
+}
+.factor-bar-track {
+  flex: 1;
+  height: 22px;
+  background: var(--bg-primary);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.factor-bar-fill {
+  height: 100%;
+  border-radius: var(--radius-sm);
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.factor-bar-value {
+  width: 36px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 500;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* Predictor rows */
+.predictor-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.predictor-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.4rem 0;
+}
+.predictor-name {
+  width: 200px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  flex-shrink: 0;
+}
+.predictor-bar-track {
+  flex: 1;
+  height: 8px;
+  background: var(--bg-primary);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.predictor-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.predictor-corr {
+  width: 60px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  text-align: right;
+  flex-shrink: 0;
+}
+.predictor-strength {
+  width: 70px;
+  font-size: 0.72rem;
+  font-weight: 500;
+  text-align: right;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .watchlist-grid { grid-template-columns: 1fr; }
+  .factor-bar-label { width: 120px; font-size: 0.75rem; }
+  .predictor-name { width: 140px; font-size: 0.75rem; }
+  .predictor-strength { display: none; }
+}
 </style>
 </head>
 <body>
@@ -1253,6 +1388,13 @@ h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 600; line-height
         <span class="nav-icon">◇</span><span class="nav-label">Retention</span>
       </a>
       <div class="nav-section-label" style="margin-top:0.5rem">3 · Thrive</div>
+      <a class="nav-item" data-screen="thrive-factors" href="#">
+        <span class="nav-icon">◈</span><span class="nav-label">Thrive Factors</span>
+      </a>
+      <a class="nav-item" data-screen="thrive-watchlist" href="#">
+        <span class="nav-icon">◇</span><span class="nav-label">Thrive Watchlist</span>
+      </a>
+      <div class="nav-section-label" style="margin-top:0.5rem">Insights</div>
       <a class="nav-item" data-screen="patterns" href="#">
         <span class="nav-icon">⬡</span><span class="nav-label">Pattern Engine</span>
       </a>
@@ -1330,6 +1472,12 @@ h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 600; line-height
 
     <!-- CLOSED LOOP -->
     <section id="closed-loop" class="screen"></section>
+
+    <!-- THRIVE FACTORS -->
+    <section id="thrive-factors" class="screen"></section>
+
+    <!-- THRIVE WATCHLIST -->
+    <section id="thrive-watchlist" class="screen"></section>
 
   </div>
 </div>
@@ -1507,6 +1655,37 @@ const INSIGHTS = [
       </table>
       <p class="detail-narrative" style="margin-top:1rem"><strong>Derek's 59% false positive rate</strong> means more than half the candidates he approves either leave or underperform within 12 months. The negative performance correlation (−0.14) means his signal is worse than flipping a coin — candidates he champions actually perform <em>worse</em> on average. This is the single highest-leverage personnel intervention available.</p>`
   },
+  { pattern: 'Hires who miss their 60-day check-in are 3.1× more likely to leave within 12 months',
+    description: 'Of the 52% of hires who completed their 60-day check-in on time, 88% are retained at 12 months. Of those who missed it, only 59% remain. The 60-day milestone is the single strongest onboarding predictor of long-term retention.',
+    confidence: 89, trend: 'stable', trendLabel: 'Stable', impact: 'high', sample: 'n = 527 hires', phase: 'land',
+    deepDive: `<p class="detail-narrative">The 60-day check-in is the <strong>critical inflection point in the onboarding journey</strong>. Earlier milestones (Day 1 tools, Week 1 manager 1:1) matter, but missing the 60-day check-in is uniquely predictive of 12-month attrition.</p>
+      <table class="cohort-table">
+        <thead><tr><th>Onboarding Milestone</th><th>Hit Rate</th><th>12-Mo Ret. (Completed)</th><th>12-Mo Ret. (Missed)</th><th>Retention Gap</th></tr></thead>
+        <tbody>
+          <tr><td style="font-weight:500;color:var(--text-primary)">Tools & access Day 1</td><td>72%</td><td>79%</td><td>71%</td><td>8pp</td></tr>
+          <tr><td style="font-weight:500;color:var(--text-primary)">Manager 1:1 in Week 1</td><td>89%</td><td>81%</td><td>64%</td><td>17pp</td></tr>
+          <tr><td style="font-weight:500;color:var(--text-primary)">Buddy assigned</td><td>54%</td><td>84%</td><td>67%</td><td>17pp</td></tr>
+          <tr><td style="font-weight:500;color:var(--text-primary)">30-day check-in</td><td>61%</td><td>83%</td><td>68%</td><td>15pp</td></tr>
+          <tr><td style="font-weight:500;color:var(--accent-teal)">60-day check-in</td><td style="color:var(--accent-teal)">48%</td><td class="highlight">88%</td><td class="warn">59%</td><td class="highlight" style="font-weight:600">29pp</td></tr>
+          <tr><td style="font-weight:500;color:var(--text-primary)">90-day review</td><td>68%</td><td>82%</td><td>70%</td><td>12pp</td></tr>
+        </tbody>
+      </table>
+      <p class="detail-narrative" style="margin-top:1rem"><strong>Only 48% of hires are completing the 60-day check-in</strong> — the lowest hit rate of any milestone. This is both the strongest signal and the biggest gap. Prioritising 60-day check-in completion is the highest-leverage onboarding intervention after the Bangalore playbook rollout.</p>`
+  },
+  { pattern: 'Employees without a stretch project by month 8 are 2.4× more likely to disengage',
+    description: 'Of 214 employees in the 6–12 month window, those who received a stretch project between months 4 and 8 show 91% retention and 4.1 avg performance. Those without any stretch assignment show 64% retention and 2.8 avg performance.',
+    confidence: 82, trend: 'up', trendLabel: 'Improving', impact: 'high', sample: 'n = 214 employees', phase: 'thrive',
+    deepDive: `<p class="detail-narrative">Stretch assignments are the <strong>strongest growth signal in the Thrive phase</strong>. The effect is consistent across role families, though most pronounced in Engineering where project variety directly impacts skill development.</p>
+      <table class="cohort-table">
+        <thead><tr><th>Growth Signal Present</th><th>Employees</th><th>12-Mo Retention</th><th>Avg Perf Rating</th><th>Promotion Rate (18mo)</th></tr></thead>
+        <tbody>
+          <tr><td style="font-weight:500;color:var(--accent-teal)">Stretch project (mo 4–8)</td><td style="color:var(--accent-teal)">89</td><td class="highlight">91%</td><td class="highlight">4.1</td><td class="highlight">34%</td></tr>
+          <tr><td style="font-weight:500;color:var(--text-primary)">Career conversation only</td><td>83</td><td>84%</td><td>3.6</td><td>19%</td></tr>
+          <tr><td style="font-weight:500;color:var(--accent-red)">No growth signals</td><td class="warn">42</td><td class="warn">64%</td><td class="warn">2.8</td><td class="warn">8%</td></tr>
+        </tbody>
+      </table>
+      <p class="detail-narrative" style="margin-top:1rem"><strong>42 employees currently have no growth signals at all</strong> — no stretch project, no career conversations, no complexity ramp. This group shows the same early disengagement profile as pre-attrition employees in prior cohorts. Managers of these employees should be prompted to assign stretch work or initiate career development conversations within 2 weeks.</p>`
+  },
 ];
 
 const RECOMMENDATIONS = [
@@ -1519,10 +1698,66 @@ const RECOMMENDATIONS = [
 ];
 
 const CLOSED_LOOP = [
-  { title: 'Standardised interview scorecard deployed', date: 'Feb 2026', outcome: 'Interview-to-offer conversion improved 11% in Engineering. Interviewer calibration variance reduced from ±1.8 to ±0.6 points.', metric: '↑ 11% conversion · ↓ 67% variance' },
-  { title: 'Source channel budget reallocated from Agency Tier 2', date: 'Jan 2026', outcome: 'Direct channel share grew from 14% to 22%. Cost per quality hire reduced by €3,100.', metric: '↓ €3,100 cost/hire · ↑ 57% direct share' },
-  { title: 'Structured debrief template for Commercial hiring', date: 'Dec 2025', outcome: 'Commercial 90-day retention improved from 79% to 86%. Debrief completion rate reached 94%.', metric: '↑ 7pp retention · 94% debrief completion' }
+  { title: 'Standardised interview scorecard deployed', date: 'Feb 2026', phase: 'hire', outcome: 'Interview-to-offer conversion improved 11% in Engineering. Interviewer calibration variance reduced from ±1.8 to ±0.6 points.', metric: '↑ 11% conversion · ↓ 67% variance' },
+  { title: '60-day check-in made mandatory across all offices', date: 'Feb 2026', phase: 'land', outcome: '60-day completion rate improved from 48% to 74% in first month. Early attrition signals in São Paulo dropped 18%.', metric: '↑ 26pp check-in rate · ↓ 18% early attrition' },
+  { title: 'Stretch project programme launched for 6–9 month employees', date: 'Jan 2026', phase: 'thrive', outcome: '31 employees assigned stretch projects in first 6 weeks. Engagement scores for participants averaging 4.2 vs 3.4 for control group.', metric: '↑ 0.8 engagement · 31 employees enrolled' },
+  { title: 'Source channel budget reallocated from Agency Tier 2', date: 'Jan 2026', phase: 'hire', outcome: 'Direct channel share grew from 14% to 22%. Cost per quality hire reduced by €3,100.', metric: '↓ €3,100 cost/hire · ↑ 57% direct share' },
+  { title: 'Manager 1:1 frequency dashboard rolled out', date: 'Dec 2025', phase: 'thrive', outcome: 'Managers with monthly-only 1:1s reduced from 28% to 12%. Average 1:1 frequency improved from bi-weekly to weekly for Engineering.', metric: '↓ 16pp low-freq managers · ↑ weekly cadence' },
+  { title: 'Bangalore onboarding buddy programme piloted in Cape Town', date: 'Dec 2025', phase: 'land', outcome: 'Cape Town buddy assignment rate went from 0% to 82%. 30-day check-in completion improved from 51% to 78%.', metric: '↑ 82% buddy rate · ↑ 27pp check-in completion' },
+  { title: 'Structured debrief template for Commercial hiring', date: 'Nov 2025', phase: 'hire', outcome: 'Commercial 90-day retention improved from 79% to 86%. Debrief completion rate reached 94%.', metric: '↑ 7pp retention · 94% debrief completion' },
 ];
+
+/* ─── THRIVE PHASE DATA ─── */
+
+const MANAGERS = [
+  { name: 'Rachel Kim', team: 'Engineering', reports: 12, oneOnOneFreq: 'Weekly', feedbackCadence: 'Bi-weekly', goalCompletion: 0.92, skipLevel: 0.83, retention12m: 0.91, avgPerf: 4.2, status: 'strong' },
+  { name: 'Tom Bradley', team: 'Product', reports: 8, oneOnOneFreq: 'Weekly', feedbackCadence: 'Weekly', goalCompletion: 0.88, skipLevel: 0.75, retention12m: 0.88, avgPerf: 4.0, status: 'strong' },
+  { name: 'Aisha Osei', team: 'Engineering', reports: 10, oneOnOneFreq: 'Bi-weekly', feedbackCadence: 'Monthly', goalCompletion: 0.85, skipLevel: 0.70, retention12m: 0.84, avgPerf: 3.8, status: 'good' },
+  { name: 'Daniel Voss', team: 'Commercial', reports: 9, oneOnOneFreq: 'Bi-weekly', feedbackCadence: 'Bi-weekly', goalCompletion: 0.79, skipLevel: 0.60, retention12m: 0.81, avgPerf: 3.6, status: 'good' },
+  { name: 'Meera Krishnan', team: 'Operations', reports: 7, oneOnOneFreq: 'Monthly', feedbackCadence: 'Quarterly', goalCompletion: 0.71, skipLevel: 0.40, retention12m: 0.72, avgPerf: 3.2, status: 'at-risk' },
+  { name: 'Chris Harding', team: 'Engineering', reports: 11, oneOnOneFreq: 'Monthly', feedbackCadence: 'Monthly', goalCompletion: 0.64, skipLevel: 0.30, retention12m: 0.65, avgPerf: 2.9, status: 'at-risk' },
+  { name: 'Fatou Diallo', team: 'Product', reports: 6, oneOnOneFreq: 'Weekly', feedbackCadence: 'Bi-weekly', goalCompletion: 0.90, skipLevel: 0.85, retention12m: 0.89, avgPerf: 4.1, status: 'strong' },
+];
+
+const THRIVE_TEAMS = [
+  { name: 'Platform Engineering', size: 14, newHireRatio: 0.14, stability: 0.92, collabBreadth: 8.3, peerFeedbackFreq: 'Weekly', attrition12m: 0.07, thriveScore: 91 },
+  { name: 'Growth Product', size: 9, newHireRatio: 0.22, stability: 0.85, collabBreadth: 6.1, peerFeedbackFreq: 'Bi-weekly', attrition12m: 0.11, thriveScore: 78 },
+  { name: 'Enterprise Sales', size: 11, newHireRatio: 0.18, stability: 0.88, collabBreadth: 5.4, peerFeedbackFreq: 'Monthly', attrition12m: 0.09, thriveScore: 82 },
+  { name: 'Core Infrastructure', size: 8, newHireRatio: 0.38, stability: 0.71, collabBreadth: 4.2, peerFeedbackFreq: 'Rarely', attrition12m: 0.25, thriveScore: 54 },
+  { name: 'Customer Success', size: 12, newHireRatio: 0.25, stability: 0.79, collabBreadth: 7.8, peerFeedbackFreq: 'Weekly', attrition12m: 0.17, thriveScore: 68 },
+  { name: 'Data Science', size: 6, newHireRatio: 0.33, stability: 0.75, collabBreadth: 5.0, peerFeedbackFreq: 'Monthly', attrition12m: 0.22, thriveScore: 59 },
+];
+
+const THRIVE_AT_RISK = [
+  { name: 'Priya Venkatesh', role: 'Engineering', team: 'Core Infrastructure', office: 'Bangalore', monthsSinceHire: 8, riskScore: 82, factors: ['No 1:1 in 4 weeks', 'No stretch project assigned', 'Team has 38% new-hire concentration'] },
+  { name: 'Marcus van Wyk', role: 'Engineering', team: 'Core Infrastructure', office: 'Cape Town', monthsSinceHire: 7, riskScore: 76, factors: ['Monthly 1:1 only', 'No career conversation in 3 months', 'Team stability at 71%'] },
+  { name: 'Camila Rocha', role: 'Product', team: 'Growth Product', office: 'São Paulo', monthsSinceHire: 9, riskScore: 71, factors: ['Goal clarity score 2.1/5', 'No skip-level check-in', 'Collaboration breadth below median'] },
+  { name: 'James Whitfield', role: 'Commercial', team: 'Enterprise Sales', office: 'London', monthsSinceHire: 11, riskScore: 68, factors: ['Feedback cadence dropped to quarterly', 'No skill development milestones logged'] },
+  { name: 'Ananya Rao', role: 'Engineering', team: 'Data Science', office: 'Bangalore', monthsSinceHire: 6, riskScore: 64, factors: ['Team has 33% new-hire concentration', 'Peer feedback frequency: rarely'] },
+  { name: 'Bram de Jong', role: 'Operations', team: 'Customer Success', office: 'Amsterdam', monthsSinceHire: 10, riskScore: 59, factors: ['No stretch project assigned', 'Manager 1:1 monthly only'] },
+];
+
+const THRIVE_WATCH = [
+  { name: 'Sipho Mabaso', role: 'Engineering', team: 'Platform Engineering', office: 'Cape Town', monthsSinceHire: 8, riskScore: 41, factors: ['Collaboration breadth slightly below median'] },
+  { name: 'Emma Bakker', role: 'Product', team: 'Growth Product', office: 'Amsterdam', monthsSinceHire: 7, riskScore: 37, factors: ['Career conversation overdue by 2 weeks'] },
+  { name: 'Rohan Gupta', role: 'Engineering', team: 'Core Infrastructure', office: 'Bangalore', monthsSinceHire: 9, riskScore: 34, factors: ['New to high-turnover team'] },
+];
+
+const PROCESS_QUALITY = {
+  overall: [
+    { metric: 'Scorecard usage', current: '64%', benchmark: '85%', trend: 'improving', rawCurrent: 64, rawBenchmark: 85 },
+    { metric: 'Structured rubric', current: '58%', benchmark: '80%', trend: 'stable', rawCurrent: 58, rawBenchmark: 80 },
+    { metric: 'Avg rounds to hire', current: '3.4', benchmark: '3.0', trend: 'stable', rawCurrent: 3.4, rawBenchmark: 3.0 },
+    { metric: 'Avg days between rounds', current: '8.2 days', benchmark: '5.0 days', trend: 'worsening', rawCurrent: 8.2, rawBenchmark: 5.0 },
+    { metric: 'Candidate experience', current: '3.8/5', benchmark: '4.2/5', trend: 'stable', rawCurrent: 3.8, rawBenchmark: 4.2 },
+  ],
+  byRole: {
+    'Engineering': { scorecardUsage: 0.71, structuredRubric: 0.62, avgRounds: 4.2, avgDaysBetween: 9.1, candidateExp: 3.6 },
+    'Product': { scorecardUsage: 0.68, structuredRubric: 0.59, avgRounds: 3.1, avgDaysBetween: 7.4, candidateExp: 3.9 },
+    'Commercial': { scorecardUsage: 0.54, structuredRubric: 0.48, avgRounds: 2.8, avgDaysBetween: 6.8, candidateExp: 4.0 },
+    'Operations': { scorecardUsage: 0.58, structuredRubric: 0.55, avgRounds: 2.6, avgDaysBetween: 7.0, candidateExp: 4.1 },
+  },
+};
 
 
 /* ═══════════════════════════════════════════════════════════════
@@ -2314,17 +2549,17 @@ function renderPatternsScreen() {
   return `
     <div class="page-header animate-in" style="--d:0">
       <div class="page-eyebrow">Pattern Engine · Live</div>
-      <h2 class="page-title">Four patterns the data is telling us</h2>
+      <h2 class="page-title">Six patterns the data is telling us</h2>
       <p class="page-subtitle">
-        Each pattern has been validated against 12 months of outcome data.
+        Each pattern has been validated against 12 months of outcome data across Hire, Land, and Thrive phases.
         Confidence is based on sample size and effect strength.
-        Two patterns are immediately actionable.
+        Three patterns are immediately actionable.
       </p>
     </div>
 
     <div class="live-bar animate-in" style="--d:30">
       <div class="live-indicator"><span class="blink"></span> Engine running</div>
-      <div class="live-updated">Processing 527 hire records · 4 patterns at high confidence · <span style="color:var(--accent-teal)">2 actionable</span></div>
+      <div class="live-updated">Processing 527 hire records + 214 thrive-window employees · 6 patterns at high confidence · <span style="color:var(--accent-teal)">3 actionable</span></div>
     </div>
 
     <div class="narrative-section">
@@ -2335,10 +2570,13 @@ function renderPatternsScreen() {
           const trendClass = ins.trend === 'up' ? 'badge-teal' : ins.trend === 'down' ? 'badge-red' : 'badge-gold';
           const impactClass = ins.impact === 'high' ? 'badge-teal' : ins.impact === 'medium' ? 'badge-gold' : 'badge-muted';
           const trendArrow = ins.trend === 'up' ? '↑' : ins.trend === 'down' ? '↓' : '→';
+          const phaseColors = { hire: 'var(--accent-teal)', land: 'var(--accent-gold)', thrive: '#7c6fe0' };
+          const phase = ins.phase || 'hire';
+          const pColor = phaseColors[phase];
           return `
           <div class="insight-card animate-in" style="--d:${80 + i * 80}" data-insight="${i}">
             <div class="insight-header">
-              <div class="insight-pattern">${ins.pattern}</div>
+              <div class="insight-pattern"><span style="font-family:var(--font-mono);font-size:0.55rem;letter-spacing:0.08em;text-transform:uppercase;color:${pColor};background:${pColor}11;padding:0.15rem 0.45rem;border-radius:20px;border:1px solid ${pColor}33;margin-right:0.5rem;vertical-align:middle">${phase.charAt(0).toUpperCase() + phase.slice(1)}</span>${ins.pattern}</div>
               <svg width="48" height="48" viewBox="0 0 48 48" style="flex-shrink:0">
                 <circle cx="24" cy="24" r="20" stroke="var(--border-subtle)" stroke-width="2.5" fill="none"/>
                 <circle cx="24" cy="24" r="20" stroke="${ins.impact==='high'?'var(--accent-teal)':'var(--accent-gold)'}" stroke-width="2.5" fill="none"
@@ -2357,6 +2595,285 @@ function renderPatternsScreen() {
             <div class="insight-detail">${ins.deepDive}</div>
           </div>`;
         }).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function renderThriveFactorsScreen() {
+  const managersSorted = [...MANAGERS].sort((a, b) => b.retention12m - a.retention12m);
+  const teamsSorted = [...THRIVE_TEAMS].sort((a, b) => b.thriveScore - a.thriveScore);
+  return `
+    <div class="page-header animate-in" style="--d:0">
+      <div class="page-eyebrow">Thrive Factors · 6–12 Month Window</div>
+      <h2 class="page-title">What predicts whether new hires keep growing</h2>
+      <p class="page-subtitle">
+        Three factor categories drive outcomes in the 6-to-12-month window.
+        Each card shows the org-level pattern and lets you drill into the people and teams behind it.
+      </p>
+    </div>
+
+    <div class="live-bar animate-in" style="--d:30">
+      <div class="live-indicator"><span class="blink"></span> Monitoring 214 employees in the 6–12mo window</div>
+      <div class="live-updated">Thrive Agent — scanning manager, growth, and team signals</div>
+    </div>
+
+    <!-- Factor 1: Manager Quality -->
+    <div class="insight-card animate-in" style="--d:60">
+      <div class="insight-header">
+        <div class="insight-icon" style="background:var(--accent-teal-dim);color:var(--accent-teal)">◉</div>
+        <div class="insight-content">
+          <div class="insight-title">Manager Quality</div>
+          <p class="insight-description">Employees with weekly 1:1s and structured feedback are 1.8× more likely to be rated 'exceeding' at 12 months</p>
+          <div class="insight-meta">
+            <span class="confidence-badge" style="--conf-color:var(--accent-teal)">
+              <svg width="18" height="18" viewBox="0 0 36 36"><circle cx="18" cy="18" r="15.5" fill="none" stroke="var(--border-subtle)" stroke-width="3"/><circle cx="18" cy="18" r="15.5" fill="none" stroke="var(--accent-teal)" stroke-width="3" stroke-dasharray="${0.88 * 97.4} 97.4" stroke-linecap="round" transform="rotate(-90 18 18)"/></svg>
+              88%
+            </span>
+            <span class="impact-tag high">HIGH IMPACT</span>
+            <span class="trend-tag up">↑ Improving</span>
+            <span class="insight-expand-hint">See the evidence →</span>
+          </div>
+        </div>
+      </div>
+      <div class="insight-detail">
+        <p class="detail-narrative">Managers who hold <strong>weekly 1:1s with structured feedback</strong> see dramatically better outcomes for their 6-12 month reports. The correlation between manager engagement and employee thriving is the strongest single predictor.</p>
+        <table class="cohort-table">
+          <thead><tr><th>Manager</th><th>Team</th><th>1:1 Freq.</th><th>Feedback</th><th>Goal Completion</th><th>Skip-Level</th><th>12mo Ret.</th><th>Avg Perf.</th></tr></thead>
+          <tbody>
+          ${managersSorted.map(m => {
+            const retColor = m.retention12m >= 0.85 ? 'highlight' : m.retention12m < 0.75 ? 'warn' : '';
+            const statusIcon = m.status === 'strong' ? '●' : m.status === 'good' ? '◐' : '○';
+            const statusColor = m.status === 'strong' ? 'var(--accent-teal)' : m.status === 'good' ? 'var(--accent-gold)' : 'var(--accent-red)';
+            return `<tr>
+              <td style="font-weight:500;color:var(--text-primary)"><span style="color:${statusColor}">${statusIcon}</span> ${m.name}</td>
+              <td>${m.team}</td>
+              <td>${m.oneOnOneFreq}</td>
+              <td>${m.feedbackCadence}</td>
+              <td>${(m.goalCompletion*100).toFixed(0)}%</td>
+              <td>${(m.skipLevel*100).toFixed(0)}%</td>
+              <td class="${retColor}">${(m.retention12m*100).toFixed(0)}%</td>
+              <td class="${retColor}">${m.avgPerf.toFixed(1)}</td>
+            </tr>`;
+          }).join('')}
+          </tbody>
+        </table>
+        <p class="detail-narrative" style="margin-top:1rem"><strong>The gap is stark:</strong> managers with weekly 1:1s retain 89-91% at 12 months, while those with monthly-only cadence retain 65-72%. Goal completion and skip-level check-in rates follow the same gradient.</p>
+      </div>
+    </div>
+
+    <!-- Factor 2: Growth & Development -->
+    <div class="insight-card animate-in" style="--d:120">
+      <div class="insight-header">
+        <div class="insight-icon" style="background:var(--accent-teal-dim);color:var(--accent-teal)">△</div>
+        <div class="insight-content">
+          <div class="insight-title">Growth & Development</div>
+          <p class="insight-description">New hires given a stretch project in months 4–8 show 23% higher engagement scores at 12 months</p>
+          <div class="insight-meta">
+            <span class="confidence-badge" style="--conf-color:var(--accent-teal)">
+              <svg width="18" height="18" viewBox="0 0 36 36"><circle cx="18" cy="18" r="15.5" fill="none" stroke="var(--border-subtle)" stroke-width="3"/><circle cx="18" cy="18" r="15.5" fill="none" stroke="var(--accent-teal)" stroke-width="3" stroke-dasharray="${0.82 * 97.4} 97.4" stroke-linecap="round" transform="rotate(-90 18 18)"/></svg>
+              82%
+            </span>
+            <span class="impact-tag high">HIGH IMPACT</span>
+            <span class="trend-tag stable">→ Stable</span>
+            <span class="insight-expand-hint">See the evidence →</span>
+          </div>
+        </div>
+      </div>
+      <div class="insight-detail">
+        <p class="detail-narrative">Stretch assignments are the strongest growth signal. Employees who receive a <strong>non-routine, challenging project between months 4 and 8</strong> show measurably higher engagement and are more likely to be promoted within 18 months.</p>
+        <table class="cohort-table">
+          <thead><tr><th>Growth Signal</th><th>Employees With</th><th>12mo Retention</th><th>Avg Perf Rating</th><th>Promotion Rate (18mo)</th></tr></thead>
+          <tbody>
+            <tr><td style="font-weight:500;color:var(--text-primary)">Stretch project assigned (mo 4–8)</td><td>89 of 214</td><td class="highlight">91%</td><td class="highlight">4.1</td><td class="highlight">34%</td></tr>
+            <tr><td style="font-weight:500;color:var(--text-primary)">Career conversation (quarterly+)</td><td>124 of 214</td><td class="highlight">87%</td><td>3.8</td><td>26%</td></tr>
+            <tr><td style="font-weight:500;color:var(--text-primary)">Skill milestone logged</td><td>71 of 214</td><td>84%</td><td>3.7</td><td>22%</td></tr>
+            <tr><td style="font-weight:500;color:var(--text-primary)">Increasing project complexity</td><td>103 of 214</td><td class="highlight">88%</td><td class="highlight">3.9</td><td>29%</td></tr>
+            <tr><td style="font-weight:500;color:var(--text-primary)">None of the above</td><td>42 of 214</td><td class="warn">64%</td><td class="warn">2.8</td><td class="warn">8%</td></tr>
+          </tbody>
+        </table>
+        <p class="detail-narrative" style="margin-top:1rem"><strong>42 employees have no growth signals at all</strong> — no stretch project, no career conversations, no complexity ramp. This group has 64% 12-month retention vs 88% for those with at least two growth signals. This is the clearest intervention target.</p>
+      </div>
+    </div>
+
+    <!-- Factor 3: Team & Environment -->
+    <div class="insight-card animate-in" style="--d:180">
+      <div class="insight-header">
+        <div class="insight-icon" style="background:var(--accent-teal-dim);color:var(--accent-teal)">⬡</div>
+        <div class="insight-content">
+          <div class="insight-title">Team & Environment</div>
+          <p class="insight-description">Teams with >20% new-hire concentration have 2× the 12-month attrition rate</p>
+          <div class="insight-meta">
+            <span class="confidence-badge" style="--conf-color:var(--accent-gold)">
+              <svg width="18" height="18" viewBox="0 0 36 36"><circle cx="18" cy="18" r="15.5" fill="none" stroke="var(--border-subtle)" stroke-width="3"/><circle cx="18" cy="18" r="15.5" fill="none" stroke="var(--accent-gold)" stroke-width="3" stroke-dasharray="${0.76 * 97.4} 97.4" stroke-linecap="round" transform="rotate(-90 18 18)"/></svg>
+              76%
+            </span>
+            <span class="impact-tag medium">MEDIUM IMPACT</span>
+            <span class="trend-tag stable">→ Stable</span>
+            <span class="insight-expand-hint">See the evidence →</span>
+          </div>
+        </div>
+      </div>
+      <div class="insight-detail">
+        <p class="detail-narrative">Team composition matters. When a team absorbs too many new hires at once, <strong>mentorship capacity is diluted</strong>, onboarding quality drops, and the team's ability to integrate newcomers degrades.</p>
+        <table class="cohort-table">
+          <thead><tr><th>Team</th><th>Size</th><th>New-Hire %</th><th>Stability</th><th>Collab Breadth</th><th>Peer Feedback</th><th>12mo Attrition</th><th>Thrive Score</th></tr></thead>
+          <tbody>
+          ${teamsSorted.map(t => {
+            const thriveColor = t.thriveScore >= 80 ? 'highlight' : t.thriveScore < 65 ? 'warn' : '';
+            const ratioColor = t.newHireRatio > 0.25 ? 'warn' : '';
+            return `<tr>
+              <td style="font-weight:500;color:var(--text-primary)">${t.name}</td>
+              <td>${t.size}</td>
+              <td class="${ratioColor}">${(t.newHireRatio*100).toFixed(0)}%</td>
+              <td>${(t.stability*100).toFixed(0)}%</td>
+              <td>${t.collabBreadth.toFixed(1)}</td>
+              <td>${t.peerFeedbackFreq}</td>
+              <td class="${t.attrition12m > 0.15 ? 'warn' : ''}">${(t.attrition12m*100).toFixed(0)}%</td>
+              <td class="${thriveColor}"><strong>${t.thriveScore}</strong></td>
+            </tr>`;
+          }).join('')}
+          </tbody>
+        </table>
+        <p class="detail-narrative" style="margin-top:1rem"><strong>Core Infrastructure and Data Science are the concern:</strong> both have >30% new-hire concentration and thrive scores below 60. These teams need hiring pauses or accelerated mentorship investment to prevent cascading attrition.</p>
+      </div>
+    </div>
+  `;
+}
+
+function renderThriveWatchlistScreen() {
+  return `
+    <div class="page-header animate-in" style="--d:0">
+      <div class="page-eyebrow">Thrive Watchlist · 6–12 Month Window</div>
+      <h2 class="page-title">They landed well. Are they still growing?</h2>
+      <p class="page-subtitle">
+        Employees who passed onboarding successfully but are now showing signs of stalling or disengagement.
+        These aren't flight risks yet — they're intervention opportunities.
+      </p>
+    </div>
+
+    <div class="live-bar animate-in" style="--d:30">
+      <div class="live-indicator"><span class="blink"></span> Monitoring 214 employees · 6 flagged · 3 on watch</div>
+      <div class="live-updated">Thrive Agent — last scan 2m ago</div>
+    </div>
+
+    <div class="narrative-section animate-in" style="--d:60">
+      <div class="section-label">At-Risk Employees</div>
+      <p class="page-subtitle" style="margin-bottom:1rem">Of 214 employees in the 6–12 month window, 6 are showing early signs of disengagement across 2 or more thrive factors.</p>
+
+      <div class="watchlist-grid">
+        ${THRIVE_AT_RISK.map((emp, i) => `
+          <div class="card risk-card animate-in" style="--d:${80 + i * 30}">
+            <div class="risk-card-header">
+              <div>
+                <div style="font-weight:600;color:var(--text-primary);font-size:0.92rem">${emp.name}</div>
+                <div style="font-size:0.75rem;color:var(--text-secondary)">${emp.role} · ${emp.team} · ${emp.office}</div>
+              </div>
+              <div class="risk-score-badge" style="background:${emp.riskScore >= 70 ? 'var(--accent-red-dim)' : 'var(--accent-gold-dim)'};color:${emp.riskScore >= 70 ? 'var(--accent-red)' : 'var(--accent-gold)'}">
+                ${emp.riskScore}%
+              </div>
+            </div>
+            <div style="font-size:0.72rem;color:var(--text-muted);margin:0.3rem 0">Month ${emp.monthsSinceHire} of 12</div>
+            <div class="risk-factors">
+              ${emp.factors.map(f => `<span class="risk-factor-tag">⚠ ${f}</span>`).join('')}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+
+    <div class="narrative-section animate-in" style="--d:200">
+      <div class="section-label">Watch List</div>
+      <p class="page-subtitle" style="margin-bottom:1rem">Monitoring — not yet at risk but showing early signals.</p>
+      <div class="watchlist-grid">
+        ${THRIVE_WATCH.map((emp, i) => `
+          <div class="card risk-card watch-card animate-in" style="--d:${220 + i * 30}">
+            <div class="risk-card-header">
+              <div>
+                <div style="font-weight:600;color:var(--text-primary);font-size:0.92rem">${emp.name}</div>
+                <div style="font-size:0.75rem;color:var(--text-secondary)">${emp.role} · ${emp.team} · ${emp.office}</div>
+              </div>
+              <div class="risk-score-badge" style="background:rgba(160,160,176,0.1);color:var(--text-muted)">
+                ${emp.riskScore}%
+              </div>
+            </div>
+            <div style="font-size:0.72rem;color:var(--text-muted);margin:0.3rem 0">Month ${emp.monthsSinceHire} of 12</div>
+            <div class="risk-factors">
+              ${emp.factors.map(f => `<span class="risk-factor-tag" style="background:rgba(160,160,176,0.08);color:var(--text-muted)">○ ${f}</span>`).join('')}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+
+    <div class="narrative-section animate-in" style="--d:280">
+      <div class="section-label">Factor Contribution to Risk</div>
+      <p class="page-subtitle" style="margin-bottom:1rem">Which thrive factor category is driving the most risk signals across the population.</p>
+      <div class="factor-heatmap">
+        <div class="factor-bar-row">
+          <span class="factor-bar-label">Manager Quality</span>
+          <div class="factor-bar-track">
+            <div class="factor-bar-fill" style="width:44%;background:var(--accent-red)"></div>
+          </div>
+          <span class="factor-bar-value" style="color:var(--accent-red)">44%</span>
+        </div>
+        <div class="factor-bar-row">
+          <span class="factor-bar-label">Growth & Development</span>
+          <div class="factor-bar-track">
+            <div class="factor-bar-fill" style="width:35%;background:var(--accent-gold)"></div>
+          </div>
+          <span class="factor-bar-value" style="color:var(--accent-gold)">35%</span>
+        </div>
+        <div class="factor-bar-row">
+          <span class="factor-bar-label">Team & Environment</span>
+          <div class="factor-bar-track">
+            <div class="factor-bar-fill" style="width:21%;background:var(--accent-teal)"></div>
+          </div>
+          <span class="factor-bar-value">21%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="narrative-section animate-in" style="--d:340">
+      <div class="section-label">Strongest Predictors of 12-Month Thriving</div>
+      <p class="page-subtitle" style="margin-bottom:1rem">What correlates most strongly with continued growth and engagement after onboarding.</p>
+      <div class="predictor-list">
+        <div class="predictor-row">
+          <span class="predictor-name">1:1 frequency</span>
+          <div class="predictor-bar-track"><div class="predictor-bar-fill" style="width:${0.68*100}%;background:var(--accent-teal)"></div></div>
+          <span class="predictor-corr highlight">r = 0.68</span>
+          <span class="predictor-strength" style="color:var(--accent-teal)">Strong</span>
+        </div>
+        <div class="predictor-row">
+          <span class="predictor-name">Stretch project assignment</span>
+          <div class="predictor-bar-track"><div class="predictor-bar-fill" style="width:${0.59*100}%;background:var(--accent-teal)"></div></div>
+          <span class="predictor-corr highlight">r = 0.59</span>
+          <span class="predictor-strength" style="color:var(--accent-teal)">Strong</span>
+        </div>
+        <div class="predictor-row">
+          <span class="predictor-name">Goal clarity score</span>
+          <div class="predictor-bar-track"><div class="predictor-bar-fill" style="width:${0.53*100}%;background:var(--accent-gold)"></div></div>
+          <span class="predictor-corr">r = 0.53</span>
+          <span class="predictor-strength" style="color:var(--accent-gold)">Moderate</span>
+        </div>
+        <div class="predictor-row">
+          <span class="predictor-name">Team stability</span>
+          <div class="predictor-bar-track"><div class="predictor-bar-fill" style="width:${0.44*100}%;background:var(--accent-gold)"></div></div>
+          <span class="predictor-corr">r = 0.44</span>
+          <span class="predictor-strength" style="color:var(--accent-gold)">Moderate</span>
+        </div>
+        <div class="predictor-row">
+          <span class="predictor-name">Collaboration breadth</span>
+          <div class="predictor-bar-track"><div class="predictor-bar-fill" style="width:${0.38*100}%;background:var(--accent-gold)"></div></div>
+          <span class="predictor-corr">r = 0.38</span>
+          <span class="predictor-strength" style="color:var(--accent-gold)">Moderate</span>
+        </div>
+        <div class="predictor-row">
+          <span class="predictor-name">Career conversation frequency</span>
+          <div class="predictor-bar-track"><div class="predictor-bar-fill" style="width:${0.31*100}%;background:var(--text-muted)"></div></div>
+          <span class="predictor-corr">r = 0.31</span>
+          <span class="predictor-strength" style="color:var(--text-muted)">Weak</span>
+        </div>
       </div>
     </div>
   `;
@@ -2457,6 +2974,58 @@ function renderInterviewersScreen() {
           remain at 12 months (vs 77% average). His performance correlation of −0.14 means candidates he
           champions actually perform <em>worse</em> than random selection. This is the single highest-leverage
           intervention available: removing him from primary loops could improve Engineering 90-day retention by an estimated 15 points.
+        </p>
+      </div>
+    </div>
+
+    <div class="narrative-section animate-in" style="--d:220">
+      <div class="section-label" style="margin-top:1.5rem">Interview Process Quality</div>
+      <p class="page-subtitle" style="margin-bottom:0.8rem">
+        Hires assessed with structured scorecards show 18% higher 12-month retention than unscored interviews.
+        Process consistency matters as much as interviewer skill.
+      </p>
+
+      <div class="card" style="margin-top:0.75rem">
+        <table class="cohort-table">
+          <thead><tr><th>Metric</th><th>Current</th><th>Benchmark</th><th>Trend</th></tr></thead>
+          <tbody>
+            ${PROCESS_QUALITY.overall.map(pq => {
+              const trendIcon = pq.trend === 'improving' ? '↑' : pq.trend === 'worsening' ? '↓' : '→';
+              const trendColor = pq.trend === 'improving' ? 'var(--accent-teal)' : pq.trend === 'worsening' ? 'var(--accent-red)' : 'var(--text-muted)';
+              return `<tr>
+                <td style="font-weight:500;color:var(--text-primary)">${pq.metric}</td>
+                <td>${pq.current}</td>
+                <td style="color:var(--text-muted)">${pq.benchmark}</td>
+                <td style="color:${trendColor};font-weight:500">${trendIcon} ${pq.trend.charAt(0).toUpperCase() + pq.trend.slice(1)}</td>
+              </tr>`;
+            }).join('')}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card" style="margin-top:0.75rem">
+        <p style="font-size:0.82rem;font-weight:500;margin-bottom:0.5rem;color:var(--text-primary)">Scorecard Usage by Role Family</p>
+        <table class="cohort-table">
+          <thead><tr><th>Role Family</th><th>Scorecard Usage</th><th>Structured Rubric</th><th>Avg Rounds</th><th>Days Between Rounds</th><th>Candidate Exp.</th></tr></thead>
+          <tbody>
+            ${Object.entries(PROCESS_QUALITY.byRole).map(([role, d]) => `<tr>
+              <td style="font-weight:500;color:var(--text-primary)">${role}</td>
+              <td class="${d.scorecardUsage < 0.60 ? 'warn' : ''}">${(d.scorecardUsage*100).toFixed(0)}%</td>
+              <td class="${d.structuredRubric < 0.55 ? 'warn' : ''}">${(d.structuredRubric*100).toFixed(0)}%</td>
+              <td class="${d.avgRounds > 3.5 ? 'warn' : ''}">${d.avgRounds.toFixed(1)}</td>
+              <td class="${d.avgDaysBetween > 8 ? 'warn' : ''}">${d.avgDaysBetween.toFixed(1)} days</td>
+              <td>${d.candidateExp.toFixed(1)}/5</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card" style="border-left:3px solid var(--accent-gold);margin-top:0.75rem">
+        <p style="font-size:0.88rem;font-weight:500;margin-bottom:0.4rem;color:var(--accent-gold)">Process Gap: Engineering</p>
+        <p style="font-size:0.82rem;color:var(--text-secondary);line-height:1.55">
+          Engineering averages 4.2 rounds with 9.1 days between stages — the slowest of all role families.
+          Combined with only 71% scorecard usage, this suggests inconsistent process execution. Capping rounds at 3
+          and mandating scorecards could reduce time-to-hire by 11 days with no quality loss (per Pattern Engine finding).
         </p>
       </div>
     </div>
@@ -2627,8 +3196,8 @@ function renderRecommendationsScreen() {
 }
 
 function renderClosedLoopScreen() {
-  const actionedCount = 3 + STATE.actionedRecs.size;
-  const totalRecs = 6 + RECOMMENDATIONS.length;
+  const actionedCount = CLOSED_LOOP.length + STATE.actionedRecs.size;
+  const totalRecs = CLOSED_LOOP.length + 3 + RECOMMENDATIONS.length;
   const pts = [];
   for (let i = 0; i <= 10; i++) {
     const x = (i / 10) * 300;
@@ -2649,15 +3218,23 @@ function renderClosedLoopScreen() {
     <div class="narrative-section animate-in" style="--d:80">
       <div class="section-label">Previously Actioned</div>
       <div class="loop-timeline">
-        ${CLOSED_LOOP.map(item => `
+        ${CLOSED_LOOP.map(item => {
+          const phaseColors = { hire: 'var(--accent-teal)', land: 'var(--accent-gold)', thrive: '#7c6fe0' };
+          const phaseLabel = item.phase ? item.phase.charAt(0).toUpperCase() + item.phase.slice(1) : '';
+          const pColor = phaseColors[item.phase] || 'var(--text-muted)';
+          return `
         <div class="loop-item">
           <div class="loop-item-header">
             <span class="loop-item-title">${item.title}</span>
-            <span class="loop-item-date">${item.date}</span>
+            <span style="display:flex;align-items:center;gap:0.5rem">
+              ${phaseLabel ? `<span style="font-family:var(--font-mono);font-size:0.55rem;letter-spacing:0.08em;text-transform:uppercase;color:${pColor};background:${pColor}11;padding:0.15rem 0.45rem;border-radius:20px;border:1px solid ${pColor}33">${phaseLabel}</span>` : ''}
+              <span class="loop-item-date">${item.date}</span>
+            </span>
           </div>
           <div class="loop-item-outcome">${item.outcome}</div>
           <div class="loop-item-metric">${item.metric}</div>
-        </div>`).join('')}
+        </div>`;
+        }).join('')}
       </div>
     </div>
 
@@ -2709,6 +3286,8 @@ const RENDERERS = {
   'interviewers': renderInterviewersScreen,
   'recommendations': renderRecommendationsScreen,
   'closed-loop': renderClosedLoopScreen,
+  'thrive-factors': renderThriveFactorsScreen,
+  'thrive-watchlist': renderThriveWatchlistScreen,
 };
 
 function switchScreen(id) {
