@@ -696,6 +696,95 @@ h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 600; line-height
 /* ═══════════════════════════════════════════
    AGENT PANEL
    ═══════════════════════════════════════════ */
+/* ═══════════════════════════════════════════
+   WELCOME MODAL
+   ═══════════════════════════════════════════ */
+.welcome-backdrop {
+  position: fixed; inset: 0;
+  background: rgba(26, 26, 46, 0.55);
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  z-index: 500;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 1; transition: opacity 0.4s ease;
+  padding: 1.5rem;
+}
+.welcome-backdrop.hidden { opacity: 0; pointer-events: none; }
+
+.welcome-modal {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  max-width: 540px; width: 100%;
+  padding: 2.5rem 2.5rem 2rem;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.06);
+  transform: translateY(0); opacity: 1;
+  transition: transform 0.4s cubic-bezier(0.4,0,0.2,1), opacity 0.4s ease;
+}
+.welcome-backdrop.hidden .welcome-modal { transform: translateY(16px); opacity: 0; }
+
+.welcome-eyebrow {
+  display: inline-flex; align-items: center; gap: 0.45rem;
+  font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--accent-teal);
+  margin-bottom: 1.25rem;
+}
+.welcome-title {
+  font-size: 1.55rem; font-weight: 600;
+  line-height: 1.25; letter-spacing: -0.03em;
+  margin-bottom: 1.25rem;
+  color: var(--text-primary);
+}
+.welcome-body p {
+  font-size: 0.88rem; line-height: 1.7;
+  color: var(--text-secondary); margin-bottom: 1.25rem;
+}
+.welcome-body p.welcome-detail { margin-bottom: 0; }
+
+.welcome-phases {
+  display: flex; flex-direction: column; gap: 0.7rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem 1.15rem;
+  background: var(--bg-primary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+}
+.welcome-phase {
+  display: flex; align-items: flex-start; gap: 0.75rem;
+}
+.welcome-phase-num {
+  flex-shrink: 0;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--accent-teal-dim);
+  border: 1px solid rgba(232,112,90,0.18);
+  color: var(--accent-teal);
+  font-family: var(--font-mono);
+  font-size: 0.62rem; font-weight: 500;
+  display: flex; align-items: center; justify-content: center;
+  margin-top: 1px;
+}
+.welcome-phase div { display: flex; flex-direction: column; gap: 0.1rem; }
+.welcome-phase strong {
+  font-family: var(--font-heading);
+  font-size: 0.82rem; font-weight: 600;
+  color: var(--text-primary); letter-spacing: -0.01em;
+}
+.welcome-phase span {
+  font-size: 0.78rem; color: var(--text-secondary); line-height: 1.5;
+}
+
+.welcome-cta {
+  display: block; width: 100%;
+  margin-top: 1.75rem; padding: 0.75rem 1.5rem;
+  background: var(--text-primary); color: #fff;
+  font-family: var(--font-heading); font-size: 0.82rem; font-weight: 500;
+  letter-spacing: -0.01em;
+  border: none; border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background var(--transition-fast), transform var(--transition-fast);
+}
+.welcome-cta:hover { background: #2d2d4a; transform: translateY(-1px); }
+
 .agent-backdrop {
   position: fixed; inset: 0; background: rgba(0,0,0,0.2);
   z-index: 200; opacity: 0; pointer-events: none;
@@ -1351,6 +1440,42 @@ h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 600; line-height
 </style>
 </head>
 <body>
+
+<!-- ═══════════ WELCOME MODAL ═══════════ -->
+<div class="welcome-backdrop" id="welcome-backdrop">
+  <div class="welcome-modal" id="welcome-modal">
+    <div class="welcome-eyebrow"><span class="live-dot"></span> Early Success Detection Engine</div>
+    <h2 class="welcome-title">Predict who succeeds.<br>Act before they don't.</h2>
+    <div class="welcome-body">
+      <p>Early Success treats employee success as a solvable problem &mdash; not destiny. By connecting data across three critical phases, the system spots patterns early and orchestrates interventions before people slip.</p>
+      <div class="welcome-phases">
+        <div class="welcome-phase">
+          <span class="welcome-phase-num">1</span>
+          <div>
+            <strong>Hire</strong>
+            <span>Are we hiring the right people, through the right channels, with the right interviewers?</span>
+          </div>
+        </div>
+        <div class="welcome-phase">
+          <span class="welcome-phase-num">2</span>
+          <div>
+            <strong>Land</strong>
+            <span>Are the first 90 days setting people up &mdash; or letting them drift?</span>
+          </div>
+        </div>
+        <div class="welcome-phase">
+          <span class="welcome-phase-num">3</span>
+          <div>
+            <strong>Thrive</strong>
+            <span>In months 6&ndash;12, are managers investing, growth happening, and teams balanced?</span>
+          </div>
+        </div>
+      </div>
+      <p class="welcome-detail">Agents detect patterns and draft recommendations. Humans decide and approve. Every intervention feeds outcome data back into the engine &mdash; a closed loop that gets sharper with each cycle.</p>
+    </div>
+    <button class="welcome-cta" id="welcome-cta">Enter the system</button>
+  </div>
+</div>
 
 <!-- MOBILE HEADER -->
 <div class="mobile-header">
@@ -3800,6 +3925,26 @@ document.addEventListener('keydown', (e) => {
    ═══════════════════════════════════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', () => {
   switchScreen('overview');
+
+  // Welcome modal — show on first visit, remember dismissal
+  const welcomeBackdrop = document.getElementById('welcome-backdrop');
+  const welcomeCta = document.getElementById('welcome-cta');
+  if (localStorage.getItem('es-welcome-seen')) {
+    welcomeBackdrop.classList.add('hidden');
+    setTimeout(() => welcomeBackdrop.style.display = 'none', 0);
+  }
+  function dismissWelcome() {
+    welcomeBackdrop.classList.add('hidden');
+    localStorage.setItem('es-welcome-seen', '1');
+    setTimeout(() => welcomeBackdrop.style.display = 'none', 450);
+  }
+  welcomeCta.addEventListener('click', dismissWelcome);
+  welcomeBackdrop.addEventListener('click', (e) => {
+    if (e.target === welcomeBackdrop) dismissWelcome();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !welcomeBackdrop.classList.contains('hidden')) dismissWelcome();
+  });
 });
 </script>
 <script defer src="/_vercel/insights/script.js"></script>
