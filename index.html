@@ -3929,13 +3929,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // Welcome modal — show on first visit, remember dismissal
   const welcomeBackdrop = document.getElementById('welcome-backdrop');
   const welcomeCta = document.getElementById('welcome-cta');
-  if (localStorage.getItem('es-welcome-seen')) {
-    welcomeBackdrop.classList.add('hidden');
-    setTimeout(() => welcomeBackdrop.style.display = 'none', 0);
-  }
   function dismissWelcome() {
     welcomeBackdrop.classList.add('hidden');
-    localStorage.setItem('es-welcome-seen', '1');
     setTimeout(() => welcomeBackdrop.style.display = 'none', 450);
   }
   welcomeCta.addEventListener('click', dismissWelcome);
