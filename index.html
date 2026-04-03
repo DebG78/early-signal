@@ -1288,8 +1288,10 @@ h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 600; line-height
   .sidebar.mobile-open { transform: translateX(0); }
   .sidebar .nav-label, .sidebar-brand h1, .sidebar-footer p, .live-badge { display: revert; }
   .sidebar-brand { padding: 1.5rem 1.25rem 1rem; }
-  .nav-item { padding: 0.6rem 1.25rem; justify-content: flex-start; }
-  .nav-section-label { display: block; }
+  .sidebar { overflow-y: auto; -webkit-overflow-scrolling: touch; }
+  .sidebar-brand { padding: 1.25rem 1.25rem 0.75rem; }
+  .nav-item { padding: 0.5rem 1.25rem; justify-content: flex-start; }
+  .nav-section-label { display: block; padding-top: 0.5rem; padding-bottom: 0.25rem; }
 
   .mobile-header { display: flex; }
   .mobile-overlay { display: block; pointer-events: none; }
