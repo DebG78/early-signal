@@ -785,6 +785,21 @@ h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 600; line-height
 }
 .welcome-cta:hover { background: #2d2d4a; transform: translateY(-1px); }
 
+@media (max-width: 600px) {
+  .welcome-backdrop { padding: 0; align-items: stretch; }
+  .welcome-modal {
+    max-width: 100%; border-radius: 0;
+    padding: 2rem 1.25rem 1.5rem;
+    max-height: 100vh; overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .welcome-title { font-size: 1.3rem; }
+  .welcome-body p { font-size: 0.82rem; }
+  .welcome-phases { padding: 0.85rem 0.9rem; gap: 0.6rem; }
+  .welcome-phase span { font-size: 0.74rem; }
+  .welcome-cta { margin-top: 1.25rem; padding: 0.85rem 1rem; }
+}
+
 .agent-backdrop {
   position: fixed; inset: 0; background: rgba(0,0,0,0.2);
   z-index: 200; opacity: 0; pointer-events: none;
