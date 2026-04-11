@@ -2556,6 +2556,246 @@ h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 600; line-height
 }
 
 /* ═══════════════════════════════════════════
+   ACTIVE EXPERIMENTS
+   ═══════════════════════════════════════════ */
+
+.exp-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 1.25rem 1.4rem 1.35rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  transition: all var(--transition-fast);
+  position: relative;
+  overflow: hidden;
+}
+.exp-card:hover {
+  border-color: var(--border-accent);
+  box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+}
+.exp-card::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+}
+.exp-card.confidence-high::before   { background: #22c55e; }
+.exp-card.confidence-medium::before { background: var(--accent-gold); }
+.exp-card.confidence-low::before    { background: var(--accent-red); }
+
+.exp-head {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 1rem; margin-bottom: 0.65rem;
+}
+.exp-head-left { flex: 1; min-width: 0; }
+.exp-name {
+  font-size: 1rem; font-weight: 600; color: var(--text-primary);
+  line-height: 1.3; margin-bottom: 0.25rem;
+}
+.exp-agent {
+  font-family: var(--font-mono); font-size: 0.56rem;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--text-muted);
+  display: inline-flex; align-items: center; gap: 0.35rem;
+}
+.exp-agent::before {
+  content: '⚡';
+  color: var(--accent-teal);
+}
+.exp-status-group {
+  display: flex; flex-direction: column; align-items: flex-end; gap: 0.35rem;
+  flex-shrink: 0;
+}
+.exp-status-badge {
+  font-family: var(--font-mono); font-size: 0.5rem;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 0.16rem 0.45rem; border-radius: 3px;
+  font-weight: 500;
+}
+.exp-status-badge.running {
+  background: rgba(34,197,94,0.1);
+  color: #16a34a;
+  display: inline-flex; align-items: center; gap: 0.3rem;
+}
+.exp-status-badge.running::before {
+  content: ''; width: 5px; height: 5px; border-radius: 50%;
+  background: #22c55e; animation: pulse 2s ease-in-out infinite;
+}
+.exp-confidence {
+  font-family: var(--font-mono); font-size: 0.5rem;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--text-muted);
+}
+.exp-confidence strong { font-weight: 600; }
+.exp-confidence.confidence-high    strong { color: #16a34a; }
+.exp-confidence.confidence-medium  strong { color: var(--accent-gold); }
+.exp-confidence.confidence-low     strong { color: var(--accent-red); }
+
+.exp-hypothesis {
+  font-size: 0.85rem; color: var(--text-primary);
+  line-height: 1.55;
+  padding: 0.75rem 0.9rem;
+  background: var(--bg-primary);
+  border-radius: var(--radius-sm);
+  border-left: 2px solid var(--accent-teal);
+  font-style: italic;
+  margin-bottom: 0.9rem;
+}
+.exp-hypothesis::before {
+  content: 'Hypothesis · ';
+  font-family: var(--font-mono);
+  font-size: 0.52rem; letter-spacing: 0.08em;
+  text-transform: uppercase; font-style: normal;
+  color: var(--accent-teal); font-weight: 600;
+}
+
+.exp-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  margin-bottom: 0.9rem;
+}
+@media (max-width: 700px) {
+  .exp-grid { grid-template-columns: 1fr; }
+}
+.exp-arm {
+  padding: 0.75rem 0.9rem;
+  border-right: 1px solid var(--border-subtle);
+}
+.exp-arm:last-child { border-right: none; }
+.exp-arm.treatment { background: rgba(34,197,94,0.03); }
+.exp-arm.control   { background: rgba(0,0,0,0.015); }
+.exp-arm-label {
+  font-family: var(--font-mono); font-size: 0.5rem;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--text-muted); margin-bottom: 0.3rem;
+}
+.exp-arm.treatment .exp-arm-label { color: #16a34a; }
+.exp-arm-desc {
+  font-size: 0.72rem; color: var(--text-primary);
+  margin-bottom: 0.5rem; font-weight: 500;
+}
+.exp-arm-portcos {
+  display: flex; flex-wrap: wrap; gap: 0.25rem;
+}
+.exp-arm-portcos .portco-chip {
+  font-size: 0.52rem; padding: 0.15rem 0.4rem;
+}
+.exp-arm-empty {
+  font-family: var(--font-mono); font-size: 0.55rem;
+  color: var(--text-muted); font-style: italic;
+}
+
+.exp-metric-block {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 0.85rem;
+  align-items: center;
+  padding: 0.7rem 0;
+  margin-bottom: 0.6rem;
+}
+@media (max-width: 700px) {
+  .exp-metric-block { grid-template-columns: 1fr; gap: 0.35rem; }
+}
+.exp-metric-label {
+  font-family: var(--font-mono); font-size: 0.5rem;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--text-muted); white-space: nowrap;
+}
+.exp-metric-read {
+  font-size: 0.82rem; color: var(--text-primary);
+  font-weight: 600;
+}
+.exp-metric-sig {
+  font-family: var(--font-mono); font-size: 0.56rem;
+  color: var(--text-secondary); white-space: nowrap;
+}
+
+.exp-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 1rem;
+  padding-top: 0.85rem;
+  border-top: 1px dashed var(--border-subtle);
+}
+.exp-progress-wrap {
+  flex: 1; min-width: 0;
+}
+.exp-progress-meta {
+  display: flex; justify-content: space-between;
+  font-family: var(--font-mono); font-size: 0.52rem;
+  color: var(--text-muted); margin-bottom: 0.3rem;
+  letter-spacing: 0.04em;
+}
+.exp-progress-bar {
+  height: 4px; background: var(--border-subtle);
+  border-radius: 2px; overflow: hidden;
+}
+.exp-progress-fill {
+  height: 100%; border-radius: 2px;
+  background: linear-gradient(90deg, var(--accent-teal), #d0604a);
+  transition: width 1.2s cubic-bezier(0.4,0,0.2,1);
+}
+.exp-decision {
+  text-align: right; flex-shrink: 0;
+}
+.exp-decision-label {
+  font-family: var(--font-mono); font-size: 0.5rem;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--text-muted);
+}
+.exp-decision-date {
+  font-family: var(--font-mono); font-size: 0.72rem;
+  color: var(--text-primary); font-weight: 600;
+  margin-top: 0.15rem;
+}
+
+/* --- Recent decisions section --- */
+.decision-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 0.85rem 1.1rem;
+  margin-bottom: 0.55rem;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.9rem;
+  align-items: center;
+}
+@media (max-width: 700px) {
+  .decision-card { grid-template-columns: 1fr; }
+}
+.decision-head {
+  display: flex; align-items: center; gap: 0.75rem;
+  margin-bottom: 0.3rem;
+}
+.decision-outcome-badge {
+  font-family: var(--font-mono); font-size: 0.52rem;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 0.2rem 0.55rem; border-radius: 3px;
+  font-weight: 600;
+}
+.decision-outcome-badge.ship   { background: rgba(34,197,94,0.1); color: #16a34a; }
+.decision-outcome-badge.hold   { background: var(--accent-gold-dim); color: var(--accent-gold); }
+.decision-outcome-badge.hybrid { background: rgba(37,99,235,0.08); color: #2563eb; }
+.decision-name {
+  font-size: 0.82rem; font-weight: 600; color: var(--text-primary);
+}
+.decision-result {
+  font-family: var(--font-mono); font-size: 0.6rem;
+  color: var(--text-secondary); line-height: 1.5;
+  margin-top: 0.2rem;
+}
+.decision-result strong { color: var(--text-primary); }
+.decision-meta {
+  font-family: var(--font-mono); font-size: 0.55rem;
+  color: var(--text-muted); text-align: right; white-space: nowrap;
+}
+
+/* ═══════════════════════════════════════════
    TALENT MOBILITY
    ═══════════════════════════════════════════ */
 
@@ -2730,8 +2970,12 @@ h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 600; line-height
       <a class="nav-item" data-screen="portfolio-risk" href="#">
         <span class="nav-icon">⚠</span><span class="nav-label">Systemic Risk Radar</span>
       </a>
+      <div class="nav-section-label" style="margin-top:0.5rem">Action</div>
       <a class="nav-item" data-screen="portfolio-mobility" href="#">
         <span class="nav-icon">⇌</span><span class="nav-label">Talent Mobility</span>
+      </a>
+      <a class="nav-item" data-screen="portfolio-experiments" href="#">
+        <span class="nav-icon">⚗</span><span class="nav-label">Active Experiments</span>
       </a>
     </div>
 
@@ -2821,11 +3065,12 @@ h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 600; line-height
     </div>
 
     <!-- PORTFOLIO SCREENS -->
-    <section id="portfolio-overview"  class="screen"></section>
-    <section id="portfolio-patterns"  class="screen"></section>
-    <section id="portfolio-benchmark" class="screen"></section>
-    <section id="portfolio-risk"      class="screen"></section>
-    <section id="portfolio-mobility"  class="screen"></section>
+    <section id="portfolio-overview"    class="screen"></section>
+    <section id="portfolio-patterns"    class="screen"></section>
+    <section id="portfolio-benchmark"   class="screen"></section>
+    <section id="portfolio-risk"        class="screen"></section>
+    <section id="portfolio-mobility"    class="screen"></section>
+    <section id="portfolio-experiments" class="screen"></section>
 
     <!-- OVERVIEW -->
     <section id="overview" class="screen active"></section>
@@ -3338,6 +3583,135 @@ const PORTFOLIO_RISKS = [
       recoveryMonths: 2.5,
     },
     action: 'Candidate Warmth agent deployment fast-tracked. Comp benchmark refresh with People Analytics.',
+  },
+];
+
+const PORTFOLIO_EXPERIMENTS = [
+  {
+    id: 'exp-warmth-lift',
+    name: 'Candidate Warmth agent — measured lift vs recruiter-only',
+    status: 'running',
+    agent: 'Candidate Warmth Agent',
+    hypothesis: 'Warmth agent increases offer acceptance by at least 5pp over recruiter-only baseline at portcos with median time-to-hire above 35 days.',
+    treatment: { label: 'Warmth agent enabled', portcos: ['swiggy', 'remitly'] },
+    control:   { label: 'Recruiter-only',        portcos: ['delivery-hero', 'meesho'] },
+    primaryMetric: 'Offer accept rate delta (treatment − control)',
+    currentRead: '+7.2pp',
+    significance: 'p = 0.043 at n=340 candidates',
+    progressPct: 58,
+    daysElapsed: 14,
+    daysTotal: 28,
+    expectedDecision: '2026-04-25',
+    confidence: 'high',
+  },
+  {
+    id: 'exp-buddy-auto-deploy',
+    name: 'Auto-deploy iFood buddy program vs opt-in model',
+    status: 'running',
+    agent: 'Onboarding Architect Agent',
+    hypothesis: 'Auto-deploying validated exemplar playbooks on a set schedule produces 2× faster adoption with no quality loss versus waiting for portcos to request them.',
+    treatment: { label: 'Auto-deploy (scheduled)', portcos: ['pharmeasy', 'despegar', 'gostudent', 'udemy'] },
+    control:   { label: 'Opt-in (request-based)',   portcos: ['delivery-hero', 'meesho', 'emag'] },
+    primaryMetric: '90-day retention delta',
+    currentRead: '+4.1pp in favour of auto-deploy',
+    significance: 'Too early — tracking 3 of 4 cohorts',
+    progressPct: 38,
+    daysElapsed: 34,
+    daysTotal: 90,
+    expectedDecision: '2026-06-15',
+    confidence: 'medium',
+  },
+  {
+    id: 'exp-mobility-framing',
+    name: 'Talent mobility match framing — 3-way test',
+    status: 'running',
+    agent: 'Talent Mobility Agent',
+    hypothesis: 'How a cross-portco match is framed affects candidate acceptance. Testing three framings against 30 candidate pairs.',
+    treatment: { label: 'A: data-driven / B: career narrative / C: comp + growth', portcos: ['ifood', 'olx', 'payu'] },
+    control:   { label: 'Historical baseline', portcos: [] },
+    primaryMetric: 'Candidate acceptance rate',
+    currentRead: 'Variant B (career narrative) leading at 62% vs A 41% / C 48%',
+    significance: 'Interim — n=14, too few to conclude',
+    progressPct: 47,
+    daysElapsed: 21,
+    daysTotal: 45,
+    expectedDecision: '2026-05-05',
+    confidence: 'low',
+  },
+  {
+    id: 'exp-holdout-validation',
+    name: 'Early Signal score — leading vs lagging indicator',
+    status: 'running',
+    agent: 'Pattern Engine',
+    hypothesis: 'Early Signal scores at day 30 of tenure predict 90-day ramp scores with r > 0.7 at holdout portcos where no interventions are applied.',
+    treatment: { label: 'N/A — observational', portcos: [] },
+    control:   { label: 'Holdout · no intervention', portcos: ['platzi', 'goodhabitz'] },
+    primaryMetric: 'Pearson correlation (ES score × 90-day ramp)',
+    currentRead: 'r = 0.81 at n=140 (GoodHabitz cohort)',
+    significance: 'p < 0.001',
+    progressPct: 92,
+    daysElapsed: 82,
+    daysTotal: 90,
+    expectedDecision: '2026-04-18',
+    confidence: 'high',
+  },
+  {
+    id: 'exp-auto-send',
+    name: 'Auto-send vs human-approved warmth at pre-screen stage',
+    status: 'running',
+    agent: 'Candidate Warmth Agent',
+    hypothesis: 'For low-stakes transparency messages (<7 days silent, screen stage) fully automated agent sending matches or exceeds human-approved quality.',
+    treatment: { label: 'Auto-send enabled', portcos: ['ifood', 'olx', 'emag'] },
+    control:   { label: 'Human-approved',    portcos: ['swiggy', 'remitly', 'brainly'] },
+    primaryMetric: 'Candidate NPS + quality review score',
+    currentRead: '96% positive auto vs 91% human · 0 quality flags',
+    significance: 'p = 0.12 at n=140/156',
+    progressPct: 71,
+    daysElapsed: 40,
+    daysTotal: 56,
+    expectedDecision: '2026-04-28',
+    confidence: 'medium',
+  },
+  {
+    id: 'exp-risk-validation',
+    name: 'Systemic risk radar — prospective validation',
+    status: 'running',
+    agent: 'Retention Monitor Agent',
+    hypothesis: 'Risks flagged by the radar with >60d lead time produce outcomes within 2pp of predicted impact when left unaddressed.',
+    treatment: { label: 'Active flagged scenarios', portcos: ['stack-overflow', 'gostudent', 'pharmeasy'] },
+    control:   { label: 'Prospective · no intervention', portcos: [] },
+    primaryMetric: 'Predicted vs actual impact at T+60d',
+    currentRead: 'First scenario resolves in 14d — 2 of 3 indicators already firing as predicted',
+    significance: 'Pending prospective read',
+    progressPct: 76,
+    daysElapsed: 49,
+    daysTotal: 63,
+    expectedDecision: '2026-04-24',
+    confidence: 'medium',
+  },
+];
+
+const EXPERIMENT_DECISIONS = [
+  {
+    name: 'Structured scorecard evidence requirement (v2)',
+    agent: 'Interview Restructure Agent',
+    decided: '2026-02-14',
+    outcome: 'SHIP',
+    result: '+18% 12-month retention confirmed across 820 hires at OLX. Propagation started at PayU, Swiggy, eMAG, Stack Overflow.',
+  },
+  {
+    name: 'Warmth agent escalation autonomy',
+    agent: 'Candidate Warmth Agent',
+    decided: '2026-03-02',
+    outcome: 'HOLD',
+    result: 'Human approval still required for escalation-stage drafts. Quality gap narrowed but not closed — re-test in Q3.',
+  },
+  {
+    name: 'Async-only vs hybrid onboarding for remote hires',
+    agent: 'Onboarding Architect Agent',
+    decided: '2026-03-28',
+    outcome: 'HYBRID',
+    result: 'Hybrid (sync anchor weeks + async content) outperformed async-only by +11pp 30-day retention. Rolling out across 5 portcos.',
   },
 ];
 
@@ -5556,6 +5930,136 @@ function renderPortfolioMobility() {
   `;
 }
 
+function renderPortfolioExperiments() {
+  const exps = PORTFOLIO_EXPERIMENTS;
+  const activeCount = exps.filter(e => e.status === 'running').length;
+  const agentCount = new Set(exps.map(e => e.agent)).size;
+  const portcoSet  = new Set(exps.flatMap(e => [...e.treatment.portcos, ...e.control.portcos]));
+  const decisionsThisQ = exps.filter(e => {
+    const d = new Date(e.expectedDecision);
+    return d.getMonth() <= 5; // Q1/Q2
+  }).length;
+
+  const expCards = exps.map((e, idx) => {
+    const treatmentChips = e.treatment.portcos.length > 0
+      ? e.treatment.portcos.map(id => portcoChipHtml(id)).join('')
+      : '<span class="exp-arm-empty">—</span>';
+    const controlChips = e.control.portcos.length > 0
+      ? e.control.portcos.map(id => portcoChipHtml(id)).join('')
+      : '<span class="exp-arm-empty">—</span>';
+    const decisionDate = new Date(e.expectedDecision).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+
+    return `
+      <div class="exp-card confidence-${e.confidence} animate-in" style="--d:${80 + idx * 35}">
+        <div class="exp-head">
+          <div class="exp-head-left">
+            <div class="exp-name">${e.name}</div>
+            <div class="exp-agent">${e.agent}</div>
+          </div>
+          <div class="exp-status-group">
+            <span class="exp-status-badge ${e.status}">${e.status}</span>
+            <span class="exp-confidence confidence-${e.confidence}">Confidence · <strong>${e.confidence}</strong></span>
+          </div>
+        </div>
+
+        <div class="exp-hypothesis">${e.hypothesis}</div>
+
+        <div class="exp-grid">
+          <div class="exp-arm treatment">
+            <div class="exp-arm-label">Treatment</div>
+            <div class="exp-arm-desc">${e.treatment.label}</div>
+            <div class="exp-arm-portcos">${treatmentChips}</div>
+          </div>
+          <div class="exp-arm control">
+            <div class="exp-arm-label">Control</div>
+            <div class="exp-arm-desc">${e.control.label}</div>
+            <div class="exp-arm-portcos">${controlChips}</div>
+          </div>
+        </div>
+
+        <div class="exp-metric-block">
+          <div class="exp-metric-label">${e.primaryMetric}</div>
+          <div class="exp-metric-read">${e.currentRead}</div>
+          <div class="exp-metric-sig">${e.significance}</div>
+        </div>
+
+        <div class="exp-footer">
+          <div class="exp-progress-wrap">
+            <div class="exp-progress-meta">
+              <span>Day ${e.daysElapsed} of ${e.daysTotal}</span>
+              <span>${e.progressPct}%</span>
+            </div>
+            <div class="exp-progress-bar">
+              <div class="exp-progress-fill" style="width:${e.progressPct}%"></div>
+            </div>
+          </div>
+          <div class="exp-decision">
+            <div class="exp-decision-label">Expected decision</div>
+            <div class="exp-decision-date">${decisionDate}</div>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  const decisionCards = EXPERIMENT_DECISIONS.map((d, idx) => {
+    const decidedDate = new Date(d.decided).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+    return `
+      <div class="decision-card animate-in" style="--d:${60 + idx * 25}">
+        <div>
+          <div class="decision-head">
+            <span class="decision-outcome-badge ${d.outcome.toLowerCase()}">${d.outcome}</span>
+            <span class="decision-name">${d.name}</span>
+          </div>
+          <div class="decision-result">${d.result}</div>
+        </div>
+        <div class="decision-meta">${d.agent}<br>${decidedDate}</div>
+      </div>
+    `;
+  }).join('');
+
+  return `
+    ${portfolioDisclaimer()}
+
+    <div class="page-header animate-in" style="--d:20">
+      <div class="page-eyebrow">Active Experiments</div>
+      <h2 class="page-title">The system is learning what works — right now, in production.</h2>
+      <p class="page-subtitle">
+        Every agent hypothesis becomes a controlled experiment across real portcos. Treatment and control arms, primary metrics,
+        early reads, decision dates. This is how the pattern engine earns its predictions: by proving them prospectively, not post-hoc.
+      </p>
+    </div>
+
+    <div class="pattern-hero animate-in" style="--d:50">
+      <div class="pattern-hero-cell">
+        <div class="pattern-hero-label">Running Now</div>
+        <div class="pattern-hero-val">${activeCount}</div>
+        <div class="pattern-hero-sub">Across ${portcoSet.size} portcos · ${agentCount} agents involved</div>
+      </div>
+      <div class="pattern-hero-cell">
+        <div class="pattern-hero-label">Decisions Expected</div>
+        <div class="pattern-hero-val positive">${decisionsThisQ}</div>
+        <div class="pattern-hero-sub">This quarter — next read in 7 days</div>
+      </div>
+      <div class="pattern-hero-cell">
+        <div class="pattern-hero-label">Shipped This Year</div>
+        <div class="pattern-hero-val">${EXPERIMENT_DECISIONS.length}</div>
+        <div class="pattern-hero-sub">Validated interventions now propagating</div>
+      </div>
+    </div>
+
+    <div class="narrative-section animate-in" style="--d:80">
+      <div class="section-label">Experiments in Flight</div>
+      ${expCards}
+    </div>
+
+    <div class="narrative-section animate-in" style="--d:${80 + exps.length * 35 + 40}">
+      <div class="section-label">Recently Decided — Validated and Shipping</div>
+      ${decisionCards}
+    </div>
+  `;
+}
+
 function renderRecommendationsScreen() {
   const warmthNeeds = (typeof WARMTH_SUMMARY !== 'undefined') ? WARMTH_SUMMARY.needsAction : 31;
   const agents = [
@@ -5812,6 +6316,7 @@ const RENDERERS = {
   'portfolio-benchmark': renderPortfolioBenchmark,
   'portfolio-risk': renderPortfolioRisk,
   'portfolio-mobility': renderPortfolioMobility,
+  'portfolio-experiments': renderPortfolioExperiments,
   // Company layer
   'overview': renderOverview,
   'funnel': renderFunnelScreen,
@@ -5828,7 +6333,7 @@ const RENDERERS = {
 };
 
 // Portfolio screens use wider dash-screen layout
-const PORTFOLIO_SCREENS = new Set(['portfolio-overview','portfolio-patterns','portfolio-benchmark','portfolio-risk','portfolio-mobility']);
+const PORTFOLIO_SCREENS = new Set(['portfolio-overview','portfolio-patterns','portfolio-benchmark','portfolio-risk','portfolio-mobility','portfolio-experiments']);
 const COMPANY_SCREENS   = new Set(['overview','funnel','activity','retention','onboarding','patterns','interviewers','candidate-warmth','recommendations','closed-loop','thrive-factors','thrive-watchlist']);
 
 function isPortfolioScreen(id) { return PORTFOLIO_SCREENS.has(id); }
