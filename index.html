@@ -1985,23 +1985,27 @@ h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 600; line-height
     <div class="global-live-bar" id="global-live-bar">
       <div class="global-live-pulse"><span class="blink"></span> Live</div>
       <div class="global-live-stats">
-        <span><span class="gl-val" id="gl-agents">4</span> agents</span>
+        <span><span class="gl-val" id="gl-agents">5</span> agents</span>
         <span class="gl-sep">│</span>
         <span><span class="gl-val" id="gl-signals">23</span> signals/sec</span>
         <span class="gl-sep">│</span>
-        <span><span class="gl-val" id="gl-active">3</span> active</span>
+        <span><span class="gl-val" id="gl-active">4</span> active</span>
       </div>
       <div class="global-live-ticker-wrap">
         <div class="global-live-ticker" id="global-ticker">
           <span><span class="ticker-dot"></span> <span class="ticker-alert">Interview Agent</span> flagged Derek Hollis — human approval required</span>
+          <span><span class="ticker-dot"></span> <span class="ticker-highlight">Warmth Agent</span> drafted 31 candidate warmth messages — awaiting recruiter approval</span>
           <span><span class="ticker-dot"></span> <span class="ticker-highlight">Sourcing Agent</span> identified €112K annual savings opportunity</span>
           <span><span class="ticker-dot"></span> <span class="ticker-highlight">Onboarding Agent</span> extracting Bangalore playbook — 14 steps</span>
+          <span><span class="ticker-dot"></span> <span class="ticker-alert">Warmth Agent</span> escalation strategy chosen for 2 offer-out candidates &gt;14d silent</span>
           <span><span class="ticker-dot"></span> Retention Monitor ingested 527 hire records</span>
           <span><span class="ticker-dot"></span> <span class="ticker-highlight">Pattern Engine</span> accuracy: 94% (+3pp this month)</span>
           <span><span class="ticker-dot"></span> <span class="ticker-alert">Q4 cohort</span> showing early attrition signals — 92% vs 94% avg</span>
           <span><span class="ticker-dot"></span> <span class="ticker-alert">Interview Agent</span> flagged Derek Hollis — human approval required</span>
+          <span><span class="ticker-dot"></span> <span class="ticker-highlight">Warmth Agent</span> drafted 31 candidate warmth messages — awaiting recruiter approval</span>
           <span><span class="ticker-dot"></span> <span class="ticker-highlight">Sourcing Agent</span> identified €112K annual savings opportunity</span>
           <span><span class="ticker-dot"></span> <span class="ticker-highlight">Onboarding Agent</span> extracting Bangalore playbook — 14 steps</span>
+          <span><span class="ticker-dot"></span> <span class="ticker-alert">Warmth Agent</span> escalation strategy chosen for 2 offer-out candidates &gt;14d silent</span>
           <span><span class="ticker-dot"></span> Retention Monitor ingested 527 hire records</span>
           <span><span class="ticker-dot"></span> <span class="ticker-highlight">Pattern Engine</span> accuracy: 94% (+3pp this month)</span>
           <span><span class="ticker-dot"></span> <span class="ticker-alert">Q4 cohort</span> showing early attrition signals — 92% vs 94% avg</span>
@@ -2462,19 +2466,19 @@ function renderOverview() {
       <div class="dash-panel" style="cursor:pointer" onclick="switchScreen('recommendations')">
         <div class="dash-panel-head">
           <span class="dash-panel-title">Agent Layer</span>
-          <span class="dash-panel-badge" style="color:#22c55e;background:rgba(34,197,94,0.08)">● 4 agents online</span>
+          <span class="dash-panel-badge" style="color:#22c55e;background:rgba(34,197,94,0.08)">● 5 agents online</span>
         </div>
         <div class="dash-panel-body" style="display:flex;gap:2rem;flex-wrap:wrap">
           <div>
-            <div style="font-family:var(--font-mono);font-size:1.1rem;font-weight:500;color:#22c55e">3</div>
+            <div style="font-family:var(--font-mono);font-size:1.1rem;font-weight:500;color:#22c55e">4</div>
             <div style="font-family:var(--font-mono);font-size:0.52rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em">Active</div>
           </div>
           <div>
-            <div style="font-family:var(--font-mono);font-size:1.1rem;font-weight:500;color:var(--accent-gold)">2</div>
+            <div style="font-family:var(--font-mono);font-size:1.1rem;font-weight:500;color:var(--accent-gold)">${typeof WARMTH_SUMMARY !== 'undefined' ? WARMTH_SUMMARY.needsAction + 2 : 33}</div>
             <div style="font-family:var(--font-mono);font-size:0.52rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em">Awaiting Human</div>
           </div>
           <div>
-            <div style="font-family:var(--font-mono);font-size:1.1rem;font-weight:500;color:var(--accent-teal)">18</div>
+            <div style="font-family:var(--font-mono);font-size:1.1rem;font-weight:500;color:var(--accent-teal)">30</div>
             <div style="font-family:var(--font-mono);font-size:0.52rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em">Tasks (30d)</div>
           </div>
           <div>
@@ -3981,8 +3985,10 @@ function renderCandidateWarmthScreen() {
 }
 
 function renderRecommendationsScreen() {
+  const warmthNeeds = (typeof WARMTH_SUMMARY !== 'undefined') ? WARMTH_SUMMARY.needsAction : 31;
   const agents = [
     { name: 'Interview Restructure Agent', status: 'busy', task: 'Drafting scorecard v2.1 for Engineering panel', progress: 72, uptime: '4h 23m', completed: 3, success: '100%', avgTime: '18m', rec: RECOMMENDATIONS[0] },
+    { name: 'Candidate Warmth Agent', status: 'busy', task: `Drafting ${warmthNeeds} warmth messages across pre-hire pipeline`, progress: 64, uptime: '4h 23m', completed: 12, success: '96%', avgTime: '2m', rec: null, screen: 'candidate-warmth' },
     { name: 'Sourcing Optimizer Agent', status: 'online', task: 'Modelling referral bonus ROI scenarios', progress: 41, uptime: '4h 23m', completed: 5, success: '100%', avgTime: '12m', rec: RECOMMENDATIONS[1] },
     { name: 'Onboarding Architect Agent', status: 'online', task: 'Extracting Bangalore playbook steps', progress: 18, uptime: '4h 23m', completed: 2, success: '100%', avgTime: '24m', rec: RECOMMENDATIONS[2] },
     { name: 'Retention Monitor Agent', status: 'idle', task: 'Idle — waiting for next cohort data', progress: 0, uptime: '4h 23m', completed: 8, success: '88%', avgTime: '6m', rec: null },
@@ -3996,13 +4002,13 @@ function renderRecommendationsScreen() {
 
     <div class="animate-in" style="--d:40">
       <div class="dash-ticker">
-        <div class="ticker-item"><span class="ticker-label">Agents</span> <span class="ticker-val">4</span></div>
+        <div class="ticker-item"><span class="ticker-label">Agents</span> <span class="ticker-val">5</span></div>
         <span class="ticker-sep">│</span>
-        <div class="ticker-item"><span class="ticker-label">Active</span> <span class="ticker-val ticker-up">3</span></div>
+        <div class="ticker-item"><span class="ticker-label">Active</span> <span class="ticker-val ticker-up">4</span></div>
         <span class="ticker-sep">│</span>
         <div class="ticker-item"><span class="ticker-label">Idle</span> <span class="ticker-val">1</span></div>
         <span class="ticker-sep">│</span>
-        <div class="ticker-item"><span class="ticker-label">Tasks Today</span> <span class="ticker-val">18</span></div>
+        <div class="ticker-item"><span class="ticker-label">Tasks Today</span> <span class="ticker-val">30</span></div>
         <span class="ticker-sep">│</span>
         <div class="ticker-item"><span class="ticker-label">Success</span> <span class="ticker-val ticker-up">94%</span></div>
         <span class="ticker-sep">│</span>
@@ -4051,14 +4057,14 @@ function renderRecommendationsScreen() {
       <div class="dash-panel">
         <div class="dash-panel-head">
           <span class="dash-panel-title">Agent Fleet Status</span>
-          <span class="dash-panel-badge" style="color:#22c55e;background:rgba(34,197,94,0.08)">3 active</span>
+          <span class="dash-panel-badge" style="color:#22c55e;background:rgba(34,197,94,0.08)">4 active</span>
         </div>
         <div class="dash-panel-body">
           ${agents.map(a => `
-          <div class="agent-card">
+          <div class="agent-card"${a.screen ? ` style="cursor:pointer" onclick="switchScreen('${a.screen}')"` : ''}>
             <div class="agent-dot ${a.status}"></div>
             <div class="agent-card-info">
-              <div class="agent-card-name">${a.name}</div>
+              <div class="agent-card-name">${a.name}${a.screen ? ' <span style="font-size:0.55rem;color:var(--accent-teal);letter-spacing:0.04em">→ open</span>' : ''}</div>
               <div class="agent-card-task">${a.task}</div>
               ${a.progress > 0 ? `<div class="mini-progress"><div class="mini-progress-fill" style="width:${a.progress}%;background:${a.status === 'busy' ? 'var(--accent-gold)' : '#22c55e'}" data-progress="${a.progress}"></div></div>` : ''}
               <div class="agent-card-stats">
@@ -4082,14 +4088,17 @@ function renderRecommendationsScreen() {
         </div>
         <div class="dash-panel-body">
           <div class="log-feed" id="agent-activity-log">
-            <div class="log-entry"><span class="log-time">now</span><span class="log-icon">⚙</span><span class="log-msg"><strong>Interview Agent:</strong> Drafting scorecard v2.1 section</span></div>
-            <div class="log-entry"><span class="log-time">14s</span><span class="log-icon">📊</span><span class="log-msg"><strong>Sourcing Agent:</strong> Running Monte Carlo on referral ROI</span></div>
-            <div class="log-entry"><span class="log-time">31s</span><span class="log-icon">📋</span><span class="log-msg"><strong>Onboarding Agent:</strong> Parsing Bangalore buddy program docs</span></div>
+            <div class="log-entry"><span class="log-time">now</span><span class="log-icon">♨</span><span class="log-msg"><strong>Warmth Agent:</strong> Escalation draft ready for Priya Venkatesh — 16 days silent</span></div>
+            <div class="log-entry"><span class="log-time">8s</span><span class="log-icon">⚙</span><span class="log-msg"><strong>Interview Agent:</strong> Drafting scorecard v2.1 section</span></div>
+            <div class="log-entry"><span class="log-time">21s</span><span class="log-icon">♨</span><span class="log-msg"><strong>Warmth Agent:</strong> Selected "human touch" strategy for 7 post-panel candidates</span></div>
+            <div class="log-entry"><span class="log-time">38s</span><span class="log-icon">📊</span><span class="log-msg"><strong>Sourcing Agent:</strong> Running Monte Carlo on referral ROI</span></div>
+            <div class="log-entry"><span class="log-time">52s</span><span class="log-icon">📋</span><span class="log-msg"><strong>Onboarding Agent:</strong> Parsing Bangalore buddy program docs</span></div>
             <div class="log-entry"><span class="log-time">1m</span><span class="log-icon">✓</span><span class="log-msg"><strong>Interview Agent:</strong> Completed false positive analysis — 59% rate confirmed</span></div>
+            <div class="log-entry"><span class="log-time">1m</span><span class="log-icon">♨</span><span class="log-msg"><strong>Warmth Agent:</strong> Detected silence on 31 candidates · pre-hire pipeline scan complete</span></div>
             <div class="log-entry"><span class="log-time">2m</span><span class="log-icon">📥</span><span class="log-msg"><strong>Retention Monitor:</strong> Ingested 527 hire records, 4 checkpoints</span></div>
             <div class="log-entry"><span class="log-time">3m</span><span class="log-icon">🔍</span><span class="log-msg"><strong>Sourcing Agent:</strong> Identified €112K annual savings opportunity</span></div>
             <div class="log-entry"><span class="log-time">4m</span><span class="log-icon">⚠</span><span class="log-msg"><strong>Interview Agent:</strong> Flagged Derek Hollis — <span style="color:var(--accent-red)">human approval required</span></span></div>
-            <div class="log-entry"><span class="log-time">5m</span><span class="log-icon">⚡</span><span class="log-msg"><strong>System:</strong> All 4 agents initialised, connected to pattern engine</span></div>
+            <div class="log-entry"><span class="log-time">5m</span><span class="log-icon">⚡</span><span class="log-msg"><strong>System:</strong> All 5 agents initialised, connected to pattern engine</span></div>
           </div>
         </div>
       </div>
@@ -4798,15 +4807,21 @@ function startSignalStream() {
 let agentLogInterval = null;
 const AGENT_LOG_MESSAGES = [
   { icon: '⚙', msg: '<strong>Interview Agent:</strong> Cross-referencing pass rates with 12-month outcomes' },
+  { icon: '♨', msg: '<strong>Warmth Agent:</strong> Silence detected on Marcus van Wyk — 11 days post-panel' },
   { icon: '📊', msg: '<strong>Sourcing Agent:</strong> Monte Carlo simulation — iteration 847/1000' },
+  { icon: '♨', msg: '<strong>Warmth Agent:</strong> Drafted "content share" message for Camila Rocha' },
   { icon: '📝', msg: '<strong>Interview Agent:</strong> Drafting scorecard v2.1 — evidence requirement for scores ≥ 4' },
   { icon: '🔍', msg: '<strong>Sourcing Agent:</strong> Scanning referral data — 174 hires, 91% 12mo retention' },
+  { icon: '♨', msg: '<strong>Warmth Agent:</strong> 3 candidates crossed into amber zone — preparing drafts' },
   { icon: '📋', msg: '<strong>Onboarding Agent:</strong> Extracting buddy program template from Bangalore docs' },
   { icon: '🔄', msg: '<strong>Retention Monitor:</strong> Updating predictive model with latest cascade data' },
+  { icon: '♨', msg: '<strong>Warmth Agent:</strong> Recruiter approved touch for James Whitfield — warmth ↑ 48→74' },
   { icon: '📊', msg: '<strong>Onboarding Agent:</strong> Comparing onboarding scores across 5 locations' },
   { icon: '⚙', msg: '<strong>Onboarding Agent:</strong> Bangalore playbook extraction — 14 steps identified' },
+  { icon: '♨', msg: '<strong>Warmth Agent:</strong> Escalation strategy chosen for 2 offer-out candidates >14d silent' },
   { icon: '✓', msg: '<strong>Sourcing Agent:</strong> Validated ROI model — €112K annual savings confirmed' },
   { icon: '🔍', msg: '<strong>Retention Monitor:</strong> Sensitivity analysis on round depth vs outcome' },
+  { icon: '♨', msg: '<strong>Warmth Agent:</strong> Correlating warmth-at-offer with 30-day ramp scores' },
   { icon: '📝', msg: '<strong>Onboarding Agent:</strong> Drafting Cape Town pilot timeline — 12 weeks' },
   { icon: '📥', msg: '<strong>Retention Monitor:</strong> Ingested Q4 performance ratings — 68 records' },
   { icon: '⚠', msg: '<strong>Interview Agent:</strong> Derek Hollis flag — <span style="color:var(--accent-red)">awaiting human approval</span>' },
