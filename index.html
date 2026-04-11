@@ -1454,6 +1454,424 @@ h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 600; line-height
   .predictor-name { width: 140px; font-size: 0.75rem; }
   .predictor-strength { display: none; }
 }
+
+/* ═══════════════════════════════════════════
+   CANDIDATE WARMTH
+   ═══════════════════════════════════════════ */
+
+/* --- Hypothesis banner --- */
+.warmth-hypothesis {
+  position: relative;
+  background: linear-gradient(135deg, rgba(232,112,90,0.05) 0%, rgba(232,112,90,0.02) 100%);
+  border: 1px solid rgba(232,112,90,0.18);
+  border-left: 3px solid var(--accent-teal);
+  border-radius: var(--radius-md);
+  padding: 1.4rem 1.6rem 1.3rem;
+  margin-bottom: 1.5rem;
+}
+.warmth-hypothesis-label {
+  font-family: var(--font-mono); font-size: 0.58rem;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--accent-teal); margin-bottom: 0.5rem;
+}
+.warmth-hypothesis-text {
+  font-size: 0.95rem; color: var(--text-primary); line-height: 1.55;
+  max-width: 780px; margin-bottom: 0.9rem;
+}
+.warmth-hypothesis-text strong { font-weight: 600; color: var(--accent-teal); }
+.warmth-hypothesis-chain {
+  font-family: var(--font-mono); font-size: 0.58rem;
+  color: var(--text-muted); letter-spacing: 0.04em;
+  padding-top: 0.75rem; border-top: 1px dashed rgba(232,112,90,0.2);
+  display: flex; align-items: center; flex-wrap: wrap; gap: 0.3rem;
+}
+.warmth-chain-step {
+  padding: 0.15rem 0.45rem; background: rgba(232,112,90,0.08);
+  border-radius: 3px; color: var(--accent-teal);
+}
+.warmth-chain-arrow { color: var(--text-muted); }
+
+/* --- Two-panel split --- */
+.warmth-split {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: 0.9rem;
+  margin-bottom: 1.5rem;
+}
+@media (max-width: 1100px) {
+  .warmth-split { grid-template-columns: 1fr; }
+}
+.warmth-panel {
+  background: var(--bg-card); border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md); overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  display: flex; flex-direction: column;
+}
+.warmth-panel-head {
+  padding: 0.65rem 0.9rem; border-bottom: 1px solid var(--border-subtle);
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--bg-primary); flex-wrap: wrap; gap: 0.5rem;
+}
+.warmth-panel-title {
+  font-family: var(--font-mono); font-size: 0.58rem; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--text-muted); font-weight: 500;
+}
+.warmth-panel-title strong { color: var(--text-primary); font-weight: 600; }
+.warmth-legend { display: flex; gap: 0.7rem; }
+.warmth-legend-item {
+  font-family: var(--font-mono); font-size: 0.52rem;
+  color: var(--text-muted); display: flex; align-items: center; gap: 0.3rem;
+  text-transform: uppercase; letter-spacing: 0.06em;
+}
+.warmth-dot {
+  width: 6px; height: 6px; border-radius: 50%; display: inline-block;
+}
+.warmth-dot.green { background: #22c55e; box-shadow: 0 0 4px rgba(34,197,94,0.4); }
+.warmth-dot.amber { background: var(--accent-gold); box-shadow: 0 0 4px rgba(200,136,10,0.4); }
+.warmth-dot.red   { background: var(--accent-red); box-shadow: 0 0 4px rgba(217,64,64,0.4); }
+
+/* --- Monitor table --- */
+.warmth-table-wrap {
+  max-height: 620px; overflow-y: auto;
+  scrollbar-width: thin; scrollbar-color: var(--border-accent) transparent;
+}
+.warmth-table-wrap::-webkit-scrollbar { width: 6px; }
+.warmth-table-wrap::-webkit-scrollbar-thumb { background: var(--border-accent); border-radius: 3px; }
+.warmth-table {
+  width: 100%; border-collapse: collapse;
+  font-family: var(--font-mono);
+}
+.warmth-table thead th {
+  position: sticky; top: 0; z-index: 2;
+  background: var(--bg-surface);
+  font-size: 0.52rem; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--text-muted); font-weight: 500;
+  padding: 0.55rem 0.8rem; text-align: left;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.warmth-table thead th.center { text-align: center; }
+.warmth-table tbody tr {
+  border-bottom: 1px solid var(--border-subtle);
+  cursor: pointer; transition: background var(--transition-fast);
+}
+.warmth-table tbody tr:hover { background: var(--bg-card-hover); }
+.warmth-table tbody tr.selected {
+  background: rgba(232,112,90,0.06);
+  box-shadow: inset 3px 0 0 var(--accent-teal);
+}
+.warmth-table tbody tr.approved {
+  opacity: 0.55;
+}
+.warmth-table tbody tr.dismissed {
+  opacity: 0.35;
+}
+.warmth-table tbody td {
+  padding: 0.55rem 0.8rem; font-size: 0.65rem; color: var(--text-secondary);
+  vertical-align: middle;
+}
+.warmth-table tbody td.center { text-align: center; }
+.warmth-name {
+  font-size: 0.72rem; font-weight: 500; color: var(--text-primary);
+  font-family: var(--font-body);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  max-width: 140px;
+}
+.warmth-role {
+  font-family: var(--font-mono); font-size: 0.55rem; color: var(--text-muted);
+  text-transform: uppercase; letter-spacing: 0.04em;
+}
+.warmth-stage-badge {
+  display: inline-block; padding: 0.1rem 0.4rem; border-radius: 3px;
+  font-size: 0.5rem; letter-spacing: 0.06em; text-transform: uppercase;
+  background: rgba(0,0,0,0.04); color: var(--text-secondary);
+  white-space: nowrap;
+}
+.warmth-silent {
+  display: inline-flex; align-items: center; gap: 0.3rem;
+  font-size: 0.62rem;
+}
+.warmth-silent.green { color: #22c55e; }
+.warmth-silent.amber { color: var(--accent-gold); }
+.warmth-silent.red   { color: var(--accent-red); font-weight: 600; }
+.warmth-score-wrap {
+  display: inline-flex; flex-direction: column; align-items: center; gap: 0.15rem;
+  min-width: 38px;
+}
+.warmth-score-val {
+  font-size: 0.7rem; font-weight: 600; letter-spacing: -0.01em;
+  transition: color 0.6s ease, transform 0.6s ease;
+}
+.warmth-score-val.hot  { color: #22c55e; }
+.warmth-score-val.warm { color: var(--accent-gold); }
+.warmth-score-val.cold { color: var(--accent-red); }
+.warmth-score-val.bumping { transform: scale(1.2); }
+.warmth-score-bar {
+  width: 34px; height: 3px; background: var(--border-subtle);
+  border-radius: 2px; overflow: hidden;
+}
+.warmth-score-fill {
+  height: 100%; border-radius: 2px;
+  transition: width 0.8s cubic-bezier(0.4,0,0.2,1), background 0.6s ease;
+}
+.warmth-strategy-tag {
+  display: inline-block; padding: 0.15rem 0.45rem; border-radius: 3px;
+  font-size: 0.5rem; letter-spacing: 0.06em; text-transform: uppercase;
+  font-weight: 500; white-space: nowrap;
+}
+.warmth-strategy-tag.transparency { color: #2563eb; background: rgba(37,99,235,0.08); }
+.warmth-strategy-tag.human        { color: var(--accent-gold); background: var(--accent-gold-dim); }
+.warmth-strategy-tag.content      { color: #7c3aed; background: rgba(124,58,237,0.08); }
+.warmth-strategy-tag.escalate     { color: var(--accent-red); background: var(--accent-red-dim); }
+.warmth-strategy-tag.none         { color: var(--text-muted); background: rgba(0,0,0,0.04); }
+
+/* --- Simulator panel --- */
+.warmth-sim-empty {
+  padding: 3rem 1.5rem; text-align: center;
+  font-size: 0.75rem; color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+.warmth-draft-area {
+  padding: 0.85rem 1rem;
+  background: linear-gradient(180deg, rgba(232,112,90,0.04) 0%, rgba(232,112,90,0) 100%);
+  border-bottom: 1px solid var(--border-subtle);
+}
+.warmth-draft-head {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 0.5rem; gap: 0.5rem;
+}
+.warmth-draft-label {
+  font-family: var(--font-mono); font-size: 0.52rem;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent-teal);
+  display: flex; align-items: center; gap: 0.35rem;
+}
+.warmth-draft-label::before {
+  content: ''; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--accent-teal); box-shadow: 0 0 5px rgba(232,112,90,0.5);
+  animation: pulse 2s ease-in-out infinite;
+}
+.warmth-draft-strategy {
+  font-family: var(--font-mono); font-size: 0.5rem;
+  letter-spacing: 0.06em; color: var(--text-muted);
+  text-transform: uppercase;
+}
+.warmth-draft-text {
+  font-size: 0.74rem; color: var(--text-primary); line-height: 1.55;
+  padding: 0.7rem 0.85rem; background: var(--bg-card);
+  border: 1px solid var(--border-subtle); border-radius: var(--radius-sm);
+  margin-bottom: 0.65rem;
+}
+.warmth-draft-btns {
+  display: flex; gap: 0.45rem;
+}
+.warmth-btn {
+  font-family: var(--font-mono); font-size: 0.56rem; font-weight: 500;
+  padding: 0.32rem 0.7rem; border-radius: 4px; border: none; cursor: pointer;
+  transition: all var(--transition-fast);
+  letter-spacing: 0.04em; text-transform: uppercase;
+}
+.warmth-btn.approve {
+  background: var(--accent-teal); color: #fff;
+}
+.warmth-btn.approve:hover { background: #d0604a; }
+.warmth-btn.approve:disabled {
+  background: #22c55e; cursor: default; opacity: 0.85;
+}
+.warmth-btn.edit,
+.warmth-btn.dismiss {
+  background: transparent; color: var(--text-secondary);
+  border: 1px solid var(--border-accent);
+}
+.warmth-btn.edit:hover,
+.warmth-btn.dismiss:hover { border-color: var(--text-muted); color: var(--text-primary); }
+
+/* --- WhatsApp-style chat thread --- */
+.warmth-chat {
+  padding: 0.9rem 0.9rem 1rem;
+  background: #f0ece5;
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(232,112,90,0.04) 0%, transparent 60%),
+    radial-gradient(circle at 80% 70%, rgba(0,0,0,0.02) 0%, transparent 60%);
+  flex: 1; overflow-y: auto; min-height: 340px;
+  display: flex; flex-direction: column; gap: 0.35rem;
+  scrollbar-width: thin; scrollbar-color: var(--border-accent) transparent;
+}
+.warmth-chat::-webkit-scrollbar { width: 5px; }
+.warmth-chat::-webkit-scrollbar-thumb { background: var(--border-accent); border-radius: 3px; }
+.warmth-chat-date {
+  text-align: center;
+  font-family: var(--font-mono); font-size: 0.5rem; letter-spacing: 0.08em;
+  color: var(--text-muted); text-transform: uppercase;
+  padding: 0.3rem 0.6rem; margin: 0.2rem auto;
+  background: rgba(255,255,255,0.6); border-radius: 10px; display: table;
+}
+.chat-bubble {
+  max-width: 78%; padding: 0.55rem 0.75rem 0.7rem;
+  border-radius: 10px; position: relative;
+  font-size: 0.72rem; line-height: 1.4; color: var(--text-primary);
+  box-shadow: 0 1px 1px rgba(0,0,0,0.06);
+  animation: bubbleIn 0.25s ease;
+}
+@keyframes bubbleIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.chat-bubble.inbound {
+  align-self: flex-start; background: #ffffff;
+  border-top-left-radius: 2px;
+}
+.chat-bubble.outbound {
+  align-self: flex-end; background: #dcf5c6;
+  border-top-right-radius: 2px;
+}
+.chat-bubble.agent {
+  align-self: flex-end;
+  background: linear-gradient(135deg, #fde1db 0%, #fcd4cb 100%);
+  border-top-right-radius: 2px;
+  border: 1px solid rgba(232,112,90,0.25);
+}
+.chat-bubble-meta {
+  font-family: var(--font-mono); font-size: 0.48rem;
+  color: var(--text-muted); margin-top: 0.25rem;
+  text-align: right; letter-spacing: 0.03em;
+}
+.chat-bubble.agent .chat-bubble-meta { color: var(--accent-teal); }
+.chat-bubble-sender {
+  font-family: var(--font-mono); font-size: 0.5rem;
+  color: var(--accent-teal); letter-spacing: 0.06em; text-transform: uppercase;
+  margin-bottom: 0.2rem; font-weight: 600;
+}
+.chat-silence {
+  align-self: stretch; text-align: center;
+  margin: 0.55rem 0.5rem; padding: 0.65rem 0.5rem;
+  font-family: var(--font-mono); font-size: 0.55rem;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--accent-red);
+  border-top: 1px dashed rgba(217,64,64,0.35);
+  border-bottom: 1px dashed rgba(217,64,64,0.35);
+  background: rgba(217,64,64,0.03);
+  position: relative;
+}
+.chat-silence-icon {
+  display: block; font-size: 0.7rem; margin-bottom: 0.2rem;
+  color: var(--accent-red);
+}
+.chat-typing {
+  align-self: flex-end;
+  background: linear-gradient(135deg, #fde1db 0%, #fcd4cb 100%);
+  border: 1px solid rgba(232,112,90,0.25);
+  border-top-right-radius: 2px; border-radius: 10px;
+  padding: 0.6rem 0.85rem;
+  display: inline-flex; gap: 0.25rem; align-items: center;
+}
+.chat-typing span {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--accent-teal);
+  animation: typingDot 1.2s ease-in-out infinite;
+}
+.chat-typing span:nth-child(2) { animation-delay: 0.15s; }
+.chat-typing span:nth-child(3) { animation-delay: 0.3s; }
+@keyframes typingDot {
+  0%, 60%, 100% { opacity: 0.3; transform: translateY(0); }
+  30% { opacity: 1; transform: translateY(-2px); }
+}
+
+/* --- Hypothesis evidence --- */
+.warmth-evidence {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 1rem;
+  align-items: stretch;
+}
+@media (max-width: 900px) {
+  .warmth-evidence { grid-template-columns: 1fr; }
+  .warmth-evid-delta { order: -1; }
+}
+.warmth-evid-card {
+  background: var(--bg-card); border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md); padding: 1.25rem 1.4rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+.warmth-evid-card.hot {
+  border-color: rgba(34,197,94,0.25);
+  background: linear-gradient(180deg, rgba(34,197,94,0.03) 0%, rgba(255,255,255,1) 100%);
+}
+.warmth-evid-card.cold {
+  border-color: rgba(217,64,64,0.22);
+  background: linear-gradient(180deg, rgba(217,64,64,0.03) 0%, rgba(255,255,255,1) 100%);
+}
+.evid-head { margin-bottom: 1rem; }
+.evid-title {
+  font-family: var(--font-heading); font-size: 1.05rem; font-weight: 600;
+  margin-bottom: 0.2rem;
+}
+.evid-title.hot  { color: #16a34a; }
+.evid-title.cold { color: var(--accent-red); }
+.evid-sub {
+  font-family: var(--font-mono); font-size: 0.55rem;
+  letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted);
+}
+.evid-rows { display: flex; flex-direction: column; gap: 0.75rem; }
+.evid-row {
+  display: grid; grid-template-columns: 80px 1fr 36px;
+  gap: 0.75rem; align-items: center;
+}
+.evid-row-label {
+  font-family: var(--font-mono); font-size: 0.6rem;
+  color: var(--text-secondary); letter-spacing: 0.04em;
+}
+.evid-bar {
+  height: 7px; background: var(--border-subtle); border-radius: 4px; overflow: hidden;
+}
+.evid-bar-fill {
+  height: 100%; border-radius: 4px;
+  transition: width 1.2s cubic-bezier(0.4,0,0.2,1);
+}
+.evid-bar-fill.hot  { background: linear-gradient(90deg, #22c55e, #16a34a); }
+.evid-bar-fill.cold { background: linear-gradient(90deg, #d94040, #b32f2f); }
+.evid-row-val {
+  font-family: var(--font-mono); font-size: 0.72rem; font-weight: 600;
+  text-align: right;
+}
+.evid-row-val.hot  { color: #16a34a; }
+.evid-row-val.cold { color: var(--accent-red); }
+.warmth-evid-delta {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 1rem 0.5rem; min-width: 100px;
+}
+.delta-val {
+  font-family: var(--font-heading); font-size: 2.4rem; font-weight: 600;
+  color: var(--accent-teal); line-height: 1; letter-spacing: -0.03em;
+}
+.delta-label {
+  font-family: var(--font-mono); font-size: 0.55rem;
+  letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted);
+  margin-top: 0.4rem; text-align: center;
+}
+.delta-sub {
+  font-family: var(--font-mono); font-size: 0.52rem;
+  color: var(--text-secondary); margin-top: 0.3rem; text-align: center;
+  letter-spacing: 0.03em;
+}
+.warmth-evid-footer {
+  font-family: var(--font-mono); font-size: 0.6rem;
+  color: var(--text-secondary); line-height: 1.6;
+  padding: 0.85rem 1rem; margin-top: 1rem;
+  background: var(--bg-card); border: 1px solid var(--border-subtle);
+  border-left: 3px solid var(--accent-teal);
+  border-radius: var(--radius-sm);
+}
+.warmth-evid-footer strong { color: var(--text-primary); }
+
+/* --- Hire card warmth row on overview --- */
+.hire-warmth-row {
+  margin-top: 0.45rem;
+  padding-top: 0.5rem;
+  border-top: 1px dashed var(--border-subtle);
+}
+.hire-warmth-row .outcomes-label::before {
+  content: '♨ '; color: var(--accent-teal); font-weight: 600;
+}
+
 </style>
 </head>
 <body>
@@ -1522,6 +1940,9 @@ h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 600; line-height
       </a>
       <a class="nav-item" data-screen="interviewers" href="#">
         <span class="nav-icon">◫</span><span class="nav-label">Interviewer Quality</span>
+      </a>
+      <a class="nav-item" data-screen="candidate-warmth" href="#">
+        <span class="nav-icon">♨</span><span class="nav-label">Candidate Warmth</span>
       </a>
       <div class="nav-section-label" style="margin-top:0.5rem">2 · Land</div>
       <a class="nav-item" data-screen="onboarding" href="#">
@@ -1609,6 +2030,9 @@ h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 600; line-height
 
     <!-- INTERVIEWERS -->
     <section id="interviewers" class="screen"></section>
+
+    <!-- CANDIDATE WARMTH -->
+    <section id="candidate-warmth" class="screen"></section>
 
     <!-- RECOMMENDATIONS -->
     <section id="recommendations" class="screen"></section>
@@ -1976,6 +2400,10 @@ function renderOverview() {
           <div class="outcomes-row"><span class="outcomes-label">Offer acceptance</span><span class="outcomes-val" style="color:var(--accent-teal)">92%</span></div>
           <div class="outcomes-row"><span class="outcomes-label">Avg time to hire</span><span class="outcomes-val">34d</span></div>
           <div class="outcomes-row"><span class="outcomes-label">Interviewer accuracy</span><span class="outcomes-val" style="color:var(--accent-red)">⚠ 1 harmful</span></div>
+          <div class="outcomes-row hire-warmth-row" onclick="event.stopPropagation(); switchScreen('candidate-warmth')" style="cursor:pointer">
+            <span class="outcomes-label">Candidate warmth</span>
+            <span class="outcomes-val" id="hire-warmth-val"><span style="color:#22c55e">${typeof WARMTH_SUMMARY !== 'undefined' ? WARMTH_SUMMARY.hot : 28}</span> warm · <span style="color:var(--accent-red)">${typeof WARMTH_SUMMARY !== 'undefined' ? WARMTH_SUMMARY.needsAction : 31}</span> need touch</span>
+          </div>
           <div style="margin-top:0.6rem;padding-top:0.5rem;border-top:1px solid var(--border-subtle)">
             <p style="font-family:var(--font-mono);font-size:0.58rem;color:var(--accent-red)">⚠ Derek Hollis flagged — agent intervention drafted</p>
           </div>
@@ -3175,6 +3603,383 @@ function renderInterviewersScreen() {
   `;
 }
 
+/* ═══════════════════════════════════════════
+   CANDIDATE WARMTH — data + renderer
+   ═══════════════════════════════════════════ */
+const WARMTH_FIRST_NAMES = [
+  'Priya','Marcus','Camila','James','Ananya','Bram','Sipho','Emma','Rohan','Lerato',
+  'Thabo','Fatima','Mateus','Aisha','Dmitri','Yuki','Chen','Olu','Nadia','Kai',
+  'Zara','Ravi','Julia','Henrik','Sofia','Amir','Leila','Tomas','Ingrid','Kwame',
+  'Mei','Pablo','Amara','Eitan','Nina','Luis','Hana','Samir','Clara','Theo',
+  'Noor','Rafael','Inez','Viktor','Ayana','Jin','Elena','Kofi','Alessia','Tariq',
+  'Imani','Dmitri'
+];
+const WARMTH_LAST_NAMES = [
+  'Venkatesh','van Wyk','Rocha','Whitfield','Rao','de Jong','Mabaso','Bakker','Gupta','Mokoena',
+  'Dlamini','El-Amin','Oliveira','Okafor','Petrov','Sato','Wu','Adesanya','Haddad','Nakamura',
+  'Boateng','Patel','Silva','Lundqvist','Ramos','Kader','Farahani','Novak','Hansen','Asante',
+  'Lin','Ortiz','Diallo','Shalev','Kowalski','Herrera','Tanaka','Youssef','Meyer','Papadopoulos',
+  'Abbas','Moreira','Nunes','Ivanov','Osei','Park','Castillo','Annan','Bianchi','Saleh',
+  'Chowdhury','Romanov'
+];
+const WARMTH_ROLES = [
+  { family: 'Engineering', titles: ['Senior Backend Engineer','Staff Platform Engineer','Frontend Lead','Infra Engineer','ML Engineer','Mobile Engineer'] },
+  { family: 'Product',     titles: ['Senior PM','Group PM','Product Designer','Staff Product Designer','UX Researcher'] },
+  { family: 'Commercial',  titles: ['Enterprise AE','Partnerships Lead','Revenue Ops Manager','Customer Success Lead'] },
+  { family: 'Operations',  titles: ['People Ops Lead','Finance Partner','Data Ops Analyst','Business Ops Manager'] },
+];
+const WARMTH_STAGES = ['Screen','Phone Interview','Technical Panel','Onsite','Offer Out'];
+
+/* Seeded PRNG so the table is stable across reloads */
+function warmthRng(seed) {
+  let s = seed >>> 0;
+  return function() {
+    s = (s * 1664525 + 1013904223) >>> 0;
+    return s / 4294967296;
+  };
+}
+
+function warmthStrategy(daysSilent, stage) {
+  if (daysSilent >= 14) {
+    return { key: 'escalate', label: 'Escalate', desc: 'Acknowledge wait + reason' };
+  }
+  if (stage === 'Technical Panel' && daysSilent >= 10) {
+    return { key: 'content', label: 'Content Share', desc: 'Company news, team context' };
+  }
+  if ((stage === 'Phone Interview' || stage === 'Onsite' || stage === 'Offer Out') && daysSilent >= 7) {
+    return { key: 'human', label: 'Human Touch', desc: 'Commit to a next-contact date' };
+  }
+  if (stage === 'Screen' && daysSilent >= 3) {
+    return { key: 'transparency', label: 'Process Transparency', desc: 'Share timeline shape' };
+  }
+  if (daysSilent >= 7) {
+    return { key: 'human', label: 'Human Touch', desc: 'Commit to a next-contact date' };
+  }
+  if (daysSilent >= 3) {
+    return { key: 'transparency', label: 'Process Transparency', desc: 'Share timeline shape' };
+  }
+  return { key: 'none', label: 'In Window', desc: 'No action needed' };
+}
+
+function warmthDraft(firstName, stage, strategy) {
+  const stageLower = stage.toLowerCase();
+  switch (strategy) {
+    case 'transparency':
+      return `Hi ${firstName} — quick update on where things stand. Your ${stageLower} notes are with the hiring manager, and the typical turnaround from here is 3–5 working days. I'll come back to you by Friday either way with concrete next steps. Thanks for your patience.`;
+    case 'human':
+      return `Hi ${firstName} — I know it's been a few days since your ${stageLower} and I don't want you left guessing. I'm chasing feedback today and I'll commit to a concrete update by Thursday, even if the answer is "still pending". Really appreciate you sticking with us.`;
+    case 'content':
+      return `Hi ${firstName} — while we finalise panel feedback I wanted to share something relevant: the team you interviewed with just shipped the platform migration we discussed. Here's the internal write-up so you can see what you'd be stepping into. Update on next steps coming by Monday.`;
+    case 'escalate':
+      return `Hi ${firstName} — I owe you an honest update. You've been waiting longer than our process should allow and that's on us. The delay is because the hiring manager has been mid-offer cycle on another role. I've now got the debrief booked for Tuesday and you'll have a decision from me by end of week. I genuinely appreciate your patience.`;
+    default:
+      return `Hi ${firstName} — just checking in. Everything is on track on our side and I'll be back with next steps shortly.`;
+  }
+}
+
+function buildWarmthCandidates() {
+  const rng = warmthRng(20260411);
+  const out = [];
+  // distribution: ~40% <7d, ~35% 7-14d, ~25% 14+d
+  const daysBuckets = [
+    { min: 1,  max: 6,  count: 21 },
+    { min: 7,  max: 13, count: 18 },
+    { min: 14, max: 28, count: 13 },
+  ];
+  const flat = [];
+  daysBuckets.forEach(b => {
+    for (let i = 0; i < b.count; i++) {
+      flat.push(b.min + Math.floor(rng() * (b.max - b.min + 1)));
+    }
+  });
+  // shuffle
+  for (let i = flat.length - 1; i > 0; i--) {
+    const j = Math.floor(rng() * (i + 1));
+    [flat[i], flat[j]] = [flat[j], flat[i]];
+  }
+
+  const usedNames = new Set();
+  for (let i = 0; i < flat.length; i++) {
+    let first, last, full;
+    do {
+      first = WARMTH_FIRST_NAMES[Math.floor(rng() * WARMTH_FIRST_NAMES.length)];
+      last  = WARMTH_LAST_NAMES [Math.floor(rng() * WARMTH_LAST_NAMES.length)];
+      full  = first + ' ' + last;
+    } while (usedNames.has(full));
+    usedNames.add(full);
+
+    const roleGroup = WARMTH_ROLES[Math.floor(rng() * WARMTH_ROLES.length)];
+    const title = roleGroup.titles[Math.floor(rng() * roleGroup.titles.length)];
+    const stage = WARMTH_STAGES[Math.floor(rng() * WARMTH_STAGES.length)];
+    const daysSilent = flat[i];
+    const stageIdx = WARMTH_STAGES.indexOf(stage);
+    const raw = 100 - (daysSilent * 2.6) - (stageIdx * 2.2) - (rng() * 4);
+    const warmth = Math.max(8, Math.min(100, Math.round(raw)));
+    const strategy = warmthStrategy(daysSilent, stage);
+
+    out.push({
+      id: 'wc-' + i,
+      first, last, full,
+      family: roleGroup.family,
+      title,
+      stage,
+      daysSilent,
+      warmth,
+      strategy: strategy.key,
+      strategyLabel: strategy.label,
+      strategyDesc: strategy.desc,
+      draft: warmthDraft(first, stage, strategy.key),
+    });
+  }
+  // sort by strategy priority then daysSilent desc so escalations are at the top
+  const priority = { escalate: 0, content: 1, human: 2, transparency: 3, none: 4 };
+  out.sort((a, b) => (priority[a.strategy] - priority[b.strategy]) || (b.daysSilent - a.daysSilent));
+  return out;
+}
+
+const WARMTH_CANDIDATES = buildWarmthCandidates();
+
+/* Snapshot numbers used on the Command Centre hire card */
+const WARMTH_SUMMARY = (() => {
+  const total = WARMTH_CANDIDATES.length;
+  const hot  = WARMTH_CANDIDATES.filter(c => c.warmth >= 70).length;
+  const cold = WARMTH_CANDIDATES.filter(c => c.warmth < 40).length;
+  const needsAction = WARMTH_CANDIDATES.filter(c => c.strategy !== 'none').length;
+  return { total, hot, cold, needsAction };
+})();
+
+function warmthScoreClass(score) {
+  if (score >= 70) return 'hot';
+  if (score >= 40) return 'warm';
+  return 'cold';
+}
+function warmthSilentClass(days) {
+  if (days < 7)  return 'green';
+  if (days < 14) return 'amber';
+  return 'red';
+}
+
+/* Build a deterministic chat thread for the candidate. */
+function warmthThread(c) {
+  const f = c.first;
+  const msgs = [];
+  const stageLower = c.stage.toLowerCase();
+  const d = c.daysSilent;
+
+  const dayLabel = (n) => {
+    if (n === 0) return 'TODAY';
+    if (n === 1) return 'YESTERDAY';
+    return n + ' DAYS AGO';
+  };
+
+  // conversation bootstraps ~ (daysSilent + 4) days before now
+  const start = d + 5;
+  msgs.push({ type: 'date', text: dayLabel(start) });
+  msgs.push({ type: 'out', text: `Hi ${f}, thanks for applying to the ${c.title} role at Prosus. Would love to set up a first conversation — do you have 30 mins this week?`, time: '09:12' });
+  msgs.push({ type: 'in',  text: `Hi! Yes absolutely, Tuesday or Thursday work well.`, time: '10:47' });
+
+  msgs.push({ type: 'date', text: dayLabel(start - 1) });
+  msgs.push({ type: 'out', text: `Perfect — I've booked Thursday 14:00 CET for the ${stageLower}. You'll meet with the hiring manager first. I'll send the calendar invite in a moment.`, time: '11:22' });
+  msgs.push({ type: 'in',  text: `Got it, thank you! Looking forward to it.`, time: '11:28' });
+
+  msgs.push({ type: 'date', text: dayLabel(d + 1) });
+  msgs.push({ type: 'in',  text: `Hey — just finished the ${stageLower}. Really enjoyed the conversation, lots to think about. Let me know when you have any feedback!`, time: '15:41' });
+  msgs.push({ type: 'out', text: `Thanks ${f}! The team was really impressed. We're gathering feedback and I'll be back to you very soon.`, time: '16:02' });
+
+  // Silence gap
+  msgs.push({ type: 'silence', days: d });
+
+  return msgs;
+}
+
+function renderCandidateWarmthScreen() {
+  const total = WARMTH_CANDIDATES.length;
+  const needsAction = WARMTH_SUMMARY.needsAction;
+  const escalate = WARMTH_CANDIDATES.filter(c => c.strategy === 'escalate').length;
+
+  const rowsHtml = WARMTH_CANDIDATES.map(c => {
+    const silentCls = warmthSilentClass(c.daysSilent);
+    const scoreCls  = warmthScoreClass(c.warmth);
+    const stratCls  = c.strategy;
+    return `
+      <tr data-cand="${c.id}">
+        <td>
+          <div class="warmth-name">${c.full}</div>
+          <div class="warmth-role">${c.family} · ${c.title}</div>
+        </td>
+        <td><span class="warmth-stage-badge">${c.stage}</span></td>
+        <td class="center">
+          <span class="warmth-silent ${silentCls}"><span class="warmth-dot ${silentCls}"></span>${c.daysSilent}d</span>
+        </td>
+        <td class="center">
+          <div class="warmth-score-wrap">
+            <span class="warmth-score-val ${scoreCls}" data-score>${c.warmth}</span>
+            <div class="warmth-score-bar"><div class="warmth-score-fill ${scoreCls}" data-score-fill style="width:${c.warmth}%;background:${scoreCls==='hot'?'#22c55e':scoreCls==='warm'?'var(--accent-gold)':'var(--accent-red)'}"></div></div>
+          </div>
+        </td>
+        <td>
+          <span class="warmth-strategy-tag ${stratCls}">${c.strategyLabel}</span>
+        </td>
+      </tr>
+    `;
+  }).join('');
+
+  return `
+    <div class="page-header animate-in" style="--d:0">
+      <div class="page-eyebrow">Candidate Warmth · Pre-hire Leading Indicator</div>
+      <h2 class="page-title">The ${needsAction} candidates we're at risk of losing to silence</h2>
+      <p class="page-subtitle">
+        Before someone becomes an early-success signal, they have to accept the offer.
+        This is the pre-hire layer of the loop: spotting candidates going cold, drafting the right kind of touch,
+        and feeding warmth into ramp correlation. <strong>${escalate}</strong> candidates are in escalation territory right now.
+      </p>
+    </div>
+
+    <!-- Section 1: Hypothesis banner -->
+    <div class="warmth-hypothesis animate-in" style="--d:30">
+      <div class="warmth-hypothesis-label">Core Hypothesis</div>
+      <div class="warmth-hypothesis-text">
+        Candidates kept warm during hiring ramp <strong>34% faster</strong> and show <strong>+18%</strong> stronger 90-day performance.
+        Warmth is the pre-hire leading indicator that plugs into the Early Signal closed loop —
+        the earliest point where an agent can actually intervene.
+      </div>
+      <div class="warmth-hypothesis-chain">
+        <span class="warmth-chain-step">Silence detected</span><span class="warmth-chain-arrow">→</span>
+        <span class="warmth-chain-step">Context assessed</span><span class="warmth-chain-arrow">→</span>
+        <span class="warmth-chain-step">Strategy chosen</span><span class="warmth-chain-arrow">→</span>
+        <span class="warmth-chain-step">Message drafted</span><span class="warmth-chain-arrow">→</span>
+        <span class="warmth-chain-step">Recruiter approves</span><span class="warmth-chain-arrow">→</span>
+        <span class="warmth-chain-step">Warmth ↑</span><span class="warmth-chain-arrow">→</span>
+        <span class="warmth-chain-step">Ramp correlation tracked</span>
+      </div>
+    </div>
+
+    <!-- Section 2: Monitor + Simulator -->
+    <div class="warmth-split animate-in" style="--d:60">
+
+      <!-- Left: recruiter monitor -->
+      <div class="warmth-panel warmth-panel-monitor">
+        <div class="warmth-panel-head">
+          <span class="warmth-panel-title">Recruiter Monitor — <strong>${total}</strong> active candidates · <strong>${needsAction}</strong> need a touch</span>
+          <span class="warmth-legend">
+            <span class="warmth-legend-item"><span class="warmth-dot green"></span>&lt;7d</span>
+            <span class="warmth-legend-item"><span class="warmth-dot amber"></span>7–14d</span>
+            <span class="warmth-legend-item"><span class="warmth-dot red"></span>14+d</span>
+          </span>
+        </div>
+        <div class="warmth-table-wrap" id="warmth-table-wrap">
+          <table class="warmth-table">
+            <thead>
+              <tr>
+                <th>Candidate</th>
+                <th>Stage</th>
+                <th class="center">Silent</th>
+                <th class="center">Warmth</th>
+                <th>Agent strategy</th>
+              </tr>
+            </thead>
+            <tbody id="warmth-tbody">
+              ${rowsHtml}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Right: candidate experience simulator -->
+      <div class="warmth-panel warmth-panel-sim">
+        <div class="warmth-panel-head">
+          <span class="warmth-panel-title" id="warmth-sim-title">Candidate Experience — select a candidate</span>
+          <span class="warmth-legend" id="warmth-sim-meta"></span>
+        </div>
+        <div id="warmth-draft-area"></div>
+        <div class="warmth-chat" id="warmth-chat">
+          <div class="warmth-sim-empty">Select a candidate on the left to see their thread and the agent-drafted warmth message.</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Section 3: Hypothesis Evidence -->
+    <div class="narrative-section animate-in" style="--d:120">
+      <div class="section-label">Hypothesis Evidence — Warmth vs Ramp</div>
+      <div class="warmth-evidence">
+
+        <div class="warmth-evid-card hot">
+          <div class="evid-head">
+            <div class="evid-title hot">Warmth &gt; 70 at offer</div>
+            <div class="evid-sub">Kept warm through the process</div>
+          </div>
+          <div class="evid-rows">
+            <div class="evid-row">
+              <span class="evid-row-label">30-day ramp</span>
+              <div class="evid-bar"><div class="evid-bar-fill hot" style="width:87%"></div></div>
+              <span class="evid-row-val hot">87</span>
+            </div>
+            <div class="evid-row">
+              <span class="evid-row-label">60-day ramp</span>
+              <div class="evid-bar"><div class="evid-bar-fill hot" style="width:83%"></div></div>
+              <span class="evid-row-val hot">83</span>
+            </div>
+            <div class="evid-row">
+              <span class="evid-row-label">90-day ramp</span>
+              <div class="evid-bar"><div class="evid-bar-fill hot" style="width:89%"></div></div>
+              <span class="evid-row-val hot">89</span>
+            </div>
+            <div class="evid-row">
+              <span class="evid-row-label">Offer accept</span>
+              <div class="evid-bar"><div class="evid-bar-fill hot" style="width:94%"></div></div>
+              <span class="evid-row-val hot">94%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="warmth-evid-delta">
+          <div class="delta-val">+22</div>
+          <div class="delta-label">pts avg ramp</div>
+          <div class="delta-sub">warm cohort<br>over cold</div>
+        </div>
+
+        <div class="warmth-evid-card cold">
+          <div class="evid-head">
+            <div class="evid-title cold">Warmth &lt; 70 at offer</div>
+            <div class="evid-sub">Drifted cold during the process</div>
+          </div>
+          <div class="evid-rows">
+            <div class="evid-row">
+              <span class="evid-row-label">30-day ramp</span>
+              <div class="evid-bar"><div class="evid-bar-fill cold" style="width:64%"></div></div>
+              <span class="evid-row-val cold">64</span>
+            </div>
+            <div class="evid-row">
+              <span class="evid-row-label">60-day ramp</span>
+              <div class="evid-bar"><div class="evid-bar-fill cold" style="width:61%"></div></div>
+              <span class="evid-row-val cold">61</span>
+            </div>
+            <div class="evid-row">
+              <span class="evid-row-label">90-day ramp</span>
+              <div class="evid-bar"><div class="evid-bar-fill cold" style="width:67%"></div></div>
+              <span class="evid-row-val cold">67</span>
+            </div>
+            <div class="evid-row">
+              <span class="evid-row-label">Offer accept</span>
+              <div class="evid-bar"><div class="evid-bar-fill cold" style="width:71%"></div></div>
+              <span class="evid-row-val cold">71%</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="warmth-evid-footer">
+        <strong>What the loop learns:</strong> every approved warmth message ties back to the candidate it rescued.
+        Six months later the Early Signal engine can trace 90-day ramp scores against warmth-at-offer and tell us,
+        for the first time, whether the pre-hire touch actually predicted post-hire success —
+        closing the loop between Hire and Land.
+      </div>
+    </div>
+  `;
+}
+
 function renderRecommendationsScreen() {
   const agents = [
     { name: 'Interview Restructure Agent', status: 'busy', task: 'Drafting scorecard v2.1 for Engineering panel', progress: 72, uptime: '4h 23m', completed: 3, success: '100%', avgTime: '18m', rec: RECOMMENDATIONS[0] },
@@ -3427,6 +4232,7 @@ const RENDERERS = {
   'onboarding': renderOnboardingScreen,
   'patterns': renderPatternsScreen,
   'interviewers': renderInterviewersScreen,
+  'candidate-warmth': renderCandidateWarmthScreen,
   'recommendations': renderRecommendationsScreen,
   'closed-loop': renderClosedLoopScreen,
   'thrive-factors': renderThriveFactorsScreen,
@@ -3434,7 +4240,17 @@ const RENDERERS = {
 };
 
 function switchScreen(id) {
+  // Guard against unknown ids
+  if (!RENDERERS[id] && id !== 'overview') return;
   STATE.activeScreen = id;
+
+  // Reflect in the URL so this screen is shareable/bookmarkable
+  try {
+    const newHash = '#' + id;
+    if (location.hash !== newHash) {
+      history.replaceState(null, '', newHash);
+    }
+  } catch (_) { /* ignore in non-browser contexts */ }
 
   // Update nav
   document.querySelectorAll('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.screen === id));
@@ -3485,6 +4301,267 @@ function switchScreen(id) {
     }, 300);
     startAgentLogSimulation();
   }
+  if (id === 'candidate-warmth') {
+    screen.classList.add('dash-screen');
+    // Auto-select the first candidate (top of the sorted list — usually an escalation)
+    const first = WARMTH_CANDIDATES[0];
+    if (first) setTimeout(() => selectWarmthCandidate(first.id), 260);
+  }
+}
+
+/* ═══════════════════════════════════════════
+   CANDIDATE WARMTH — interactions
+   ═══════════════════════════════════════════ */
+const WARMTH_STATE = { selectedId: null, handled: {} };
+
+function selectWarmthCandidate(id) {
+  const c = WARMTH_CANDIDATES.find(x => x.id === id);
+  if (!c) return;
+  WARMTH_STATE.selectedId = id;
+
+  // Row highlight
+  document.querySelectorAll('#warmth-tbody tr').forEach(tr => {
+    tr.classList.toggle('selected', tr.dataset.cand === id);
+  });
+
+  // Header
+  const titleEl = document.getElementById('warmth-sim-title');
+  const metaEl  = document.getElementById('warmth-sim-meta');
+  if (titleEl) titleEl.innerHTML = `Candidate Experience — <strong>${c.full}</strong>`;
+  if (metaEl) {
+    const silentCls = warmthSilentClass(c.daysSilent);
+    metaEl.innerHTML = `
+      <span class="warmth-legend-item"><span class="warmth-dot ${silentCls}"></span>${c.daysSilent}d silent</span>
+      <span class="warmth-legend-item" style="color:var(--accent-teal)">Warmth ${c.warmth}</span>
+    `;
+  }
+
+  const handled = WARMTH_STATE.handled[id];
+
+  // Draft area
+  const draftEl = document.getElementById('warmth-draft-area');
+  if (draftEl) {
+    if (c.strategy === 'none') {
+      draftEl.innerHTML = `
+        <div class="warmth-draft-area" style="background:transparent">
+          <div class="warmth-draft-head">
+            <span class="warmth-draft-label">In window</span>
+            <span class="warmth-draft-strategy">No action needed</span>
+          </div>
+          <div class="warmth-draft-text" style="color:var(--text-secondary);font-style:italic">
+            This candidate is still inside the healthy contact window. The agent is monitoring but not drafting.
+          </div>
+        </div>
+      `;
+    } else if (handled === 'approved') {
+      draftEl.innerHTML = `
+        <div class="warmth-draft-area" style="background:rgba(34,197,94,0.05)">
+          <div class="warmth-draft-head">
+            <span class="warmth-draft-label" style="color:#16a34a">✓ Sent</span>
+            <span class="warmth-draft-strategy">Strategy · ${c.strategyLabel}</span>
+          </div>
+          <div class="warmth-draft-text">${c.draft}</div>
+          <div class="warmth-draft-btns">
+            <button class="warmth-btn approve" disabled>Approved ✓</button>
+          </div>
+        </div>
+      `;
+    } else if (handled === 'dismissed') {
+      draftEl.innerHTML = `
+        <div class="warmth-draft-area" style="background:rgba(0,0,0,0.02)">
+          <div class="warmth-draft-head">
+            <span class="warmth-draft-label" style="color:var(--text-muted)">✕ Dismissed</span>
+            <span class="warmth-draft-strategy">Recruiter passed on this draft</span>
+          </div>
+          <div class="warmth-draft-text" style="color:var(--text-muted);text-decoration:line-through">${c.draft}</div>
+        </div>
+      `;
+    } else {
+      draftEl.innerHTML = `
+        <div class="warmth-draft-area">
+          <div class="warmth-draft-head">
+            <span class="warmth-draft-label">Agent draft ready</span>
+            <span class="warmth-draft-strategy">Strategy · ${c.strategyLabel} — ${c.strategyDesc}</span>
+          </div>
+          <div class="warmth-draft-text" data-draft-text>${c.draft}</div>
+          <div class="warmth-draft-btns">
+            <button class="warmth-btn approve" data-warmth-action="approve">Approve & Send</button>
+            <button class="warmth-btn edit"    data-warmth-action="edit">Edit</button>
+            <button class="warmth-btn dismiss" data-warmth-action="dismiss">Dismiss</button>
+          </div>
+        </div>
+      `;
+    }
+  }
+
+  // Chat thread
+  const chatEl = document.getElementById('warmth-chat');
+  if (chatEl) {
+    const msgs = warmthThread(c);
+    chatEl.innerHTML = msgs.map(m => {
+      if (m.type === 'date')    return `<div class="warmth-chat-date">${m.text}</div>`;
+      if (m.type === 'silence') return `
+        <div class="chat-silence">
+          <span class="chat-silence-icon">···</span>
+          ${m.days} days of silence
+        </div>`;
+      if (m.type === 'out') return `
+        <div class="chat-bubble outbound">
+          <div class="chat-bubble-sender">Recruiter</div>
+          ${m.text}
+          <div class="chat-bubble-meta">${m.time || ''} ✓✓</div>
+        </div>`;
+      return `
+        <div class="chat-bubble inbound">
+          ${m.text}
+          <div class="chat-bubble-meta">${m.time || ''}</div>
+        </div>`;
+    }).join('');
+
+    // If already approved, append the sent agent bubble at the end
+    if (handled === 'approved') {
+      const bubble = document.createElement('div');
+      bubble.className = 'chat-bubble agent';
+      bubble.innerHTML = `
+        <div class="chat-bubble-sender">♨ Agent touch · sent by recruiter</div>
+        ${c.draft}
+        <div class="chat-bubble-meta">just now ✓✓</div>
+      `;
+      chatEl.appendChild(bubble);
+    }
+
+    // Scroll to bottom
+    requestAnimationFrame(() => { chatEl.scrollTop = chatEl.scrollHeight; });
+  }
+}
+
+function approveWarmthDraft() {
+  const id = WARMTH_STATE.selectedId;
+  if (!id) return;
+  const c = WARMTH_CANDIDATES.find(x => x.id === id);
+  if (!c || WARMTH_STATE.handled[id]) return;
+
+  // Pull the (possibly-edited) draft text live from the DOM
+  const draftTextEl = document.querySelector('[data-draft-text]');
+  if (draftTextEl) {
+    const edited = draftTextEl.textContent.trim();
+    if (edited) c.draft = edited;
+  }
+
+  // Lock approve button
+  const btn = document.querySelector('[data-warmth-action="approve"]');
+  if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
+
+  const chatEl = document.getElementById('warmth-chat');
+  if (!chatEl) return;
+
+  // Step 1: typing indicator
+  const typing = document.createElement('div');
+  typing.className = 'chat-typing';
+  typing.innerHTML = '<span></span><span></span><span></span>';
+  chatEl.appendChild(typing);
+  chatEl.scrollTop = chatEl.scrollHeight;
+
+  // Step 2: after a beat, replace with agent bubble that types out char-by-char
+  setTimeout(() => {
+    typing.remove();
+    const bubble = document.createElement('div');
+    bubble.className = 'chat-bubble agent';
+    bubble.innerHTML = `
+      <div class="chat-bubble-sender">♨ Agent touch · sent by recruiter</div>
+      <span data-typed></span>
+      <div class="chat-bubble-meta">just now ✓✓</div>
+    `;
+    chatEl.appendChild(bubble);
+    chatEl.scrollTop = chatEl.scrollHeight;
+
+    const target = bubble.querySelector('[data-typed]');
+    const text = c.draft;
+    let i = 0;
+    const step = () => {
+      // Type a few chars per tick to keep it readable
+      i = Math.min(text.length, i + 3);
+      target.textContent = text.slice(0, i);
+      chatEl.scrollTop = chatEl.scrollHeight;
+      if (i < text.length) {
+        setTimeout(step, 14);
+      } else {
+        finishWarmthApproval(c);
+      }
+    };
+    step();
+  }, 850);
+}
+
+function finishWarmthApproval(c) {
+  WARMTH_STATE.handled[c.id] = 'approved';
+
+  // Bump warmth score in the table row with animation
+  const row = document.querySelector(`#warmth-tbody tr[data-cand="${c.id}"]`);
+  if (row) {
+    const newScore = Math.min(100, c.warmth + 26);
+    const newCls = warmthScoreClass(newScore);
+    const scoreEl = row.querySelector('[data-score]');
+    const fillEl  = row.querySelector('[data-score-fill]');
+    if (scoreEl) {
+      scoreEl.classList.add('bumping');
+      scoreEl.classList.remove('hot','warm','cold');
+      scoreEl.classList.add(newCls);
+      scoreEl.textContent = newScore;
+      setTimeout(() => scoreEl.classList.remove('bumping'), 700);
+    }
+    if (fillEl) {
+      fillEl.style.width = newScore + '%';
+      fillEl.style.background = newCls === 'hot' ? '#22c55e' : newCls === 'warm' ? 'var(--accent-gold)' : 'var(--accent-red)';
+    }
+    // Persist the score change on the underlying object so re-selecting looks right
+    c.warmth = newScore;
+    row.classList.add('approved');
+  }
+
+  // Swap draft area to "sent" state
+  const draftEl = document.getElementById('warmth-draft-area');
+  if (draftEl) {
+    draftEl.innerHTML = `
+      <div class="warmth-draft-area" style="background:rgba(34,197,94,0.05)">
+        <div class="warmth-draft-head">
+          <span class="warmth-draft-label" style="color:#16a34a">✓ Sent</span>
+          <span class="warmth-draft-strategy">Strategy · ${c.strategyLabel}</span>
+        </div>
+        <div class="warmth-draft-text">${c.draft}</div>
+        <div class="warmth-draft-btns">
+          <button class="warmth-btn approve" disabled>Approved ✓</button>
+        </div>
+      </div>
+    `;
+  }
+
+  // Update simulator header meta
+  const metaEl = document.getElementById('warmth-sim-meta');
+  if (metaEl) {
+    metaEl.innerHTML = `
+      <span class="warmth-legend-item" style="color:#16a34a">Warmth ↑ ${c.warmth}</span>
+      <span class="warmth-legend-item" style="color:var(--accent-teal)">Touched just now</span>
+    `;
+  }
+}
+
+function dismissWarmthDraft() {
+  const id = WARMTH_STATE.selectedId;
+  if (!id) return;
+  WARMTH_STATE.handled[id] = 'dismissed';
+  const row = document.querySelector(`#warmth-tbody tr[data-cand="${id}"]`);
+  if (row) row.classList.add('dismissed');
+  selectWarmthCandidate(id); // re-render in dismissed state
+}
+
+function editWarmthDraft() {
+  const textEl = document.querySelector('[data-draft-text]');
+  if (!textEl) return;
+  textEl.contentEditable = 'true';
+  textEl.style.outline = '1px solid var(--accent-gold)';
+  textEl.style.background = 'rgba(200,136,10,0.04)';
+  textEl.focus();
 }
 
 function renderPipelineBars() {
@@ -3915,6 +4992,20 @@ document.addEventListener('click', (e) => {
     return;
   }
 
+  // Candidate warmth row select
+  const warmthRow = e.target.closest('#warmth-tbody tr[data-cand]');
+  if (warmthRow) { selectWarmthCandidate(warmthRow.dataset.cand); return; }
+
+  // Candidate warmth draft actions
+  const warmthAction = e.target.closest('[data-warmth-action]');
+  if (warmthAction) {
+    const act = warmthAction.dataset.warmthAction;
+    if (act === 'approve')  approveWarmthDraft();
+    if (act === 'dismiss')  dismissWarmthDraft();
+    if (act === 'edit')     editWarmthDraft();
+    return;
+  }
+
   const actionBtn = e.target.closest('.action-btn');
   if (actionBtn && !actionBtn.disabled) { openAgentPanel(actionBtn.dataset.rec); return; }
 
@@ -3941,7 +5032,20 @@ document.addEventListener('keydown', (e) => {
    INIT
    ═══════════════════════════════════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', () => {
-  switchScreen('overview');
+  // Deep-link: honour #screen-id in the URL so links like index.html#candidate-warmth land directly
+  const initialHash = (location.hash || '').replace(/^#/, '');
+  const initialScreen = (initialHash && (RENDERERS[initialHash] || initialHash === 'overview'))
+    ? initialHash
+    : 'overview';
+  switchScreen(initialScreen);
+
+  // Respond to back/forward and manual hash edits
+  window.addEventListener('hashchange', () => {
+    const h = (location.hash || '').replace(/^#/, '');
+    if (h && (RENDERERS[h] || h === 'overview') && h !== STATE.activeScreen) {
+      switchScreen(h);
+    }
+  });
 
   // Welcome modal — show on first visit, remember dismissal
   const welcomeBackdrop = document.getElementById('welcome-backdrop');
@@ -3949,6 +5053,11 @@ document.addEventListener('DOMContentLoaded', () => {
   function dismissWelcome() {
     welcomeBackdrop.classList.add('hidden');
     setTimeout(() => welcomeBackdrop.style.display = 'none', 450);
+  }
+  // Deep-link arrivals skip the welcome modal entirely — send them straight to the requested screen
+  if (initialHash && (RENDERERS[initialHash] || initialHash === 'overview')) {
+    welcomeBackdrop.classList.add('hidden');
+    welcomeBackdrop.style.display = 'none';
   }
   welcomeCta.addEventListener('click', dismissWelcome);
   welcomeBackdrop.addEventListener('click', (e) => {
