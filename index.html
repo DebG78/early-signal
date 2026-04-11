@@ -1456,6 +1456,86 @@ h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 600; line-height
 }
 
 /* ═══════════════════════════════════════════
+   PORTFOLIO + WARMTH — mobile fixes
+   ═══════════════════════════════════════════ */
+
+/* View toggle: hide at the 56px icon rail breakpoint, restore inside the phone drawer */
+@media (max-width: 900px) {
+  .view-toggle { display: none !important; }
+}
+@media (max-width: 600px) {
+  .sidebar.mobile-open .view-toggle,
+  .view-toggle { display: flex !important; }
+}
+
+/* Portco breadcrumb: match the reduced screen padding so it doesn't overflow horizontally */
+@media (max-width: 900px) {
+  .portco-breadcrumb {
+    padding: 0.6rem 1.5rem;
+    margin: -2rem -1.5rem 1.5rem;
+  }
+  .portco-breadcrumb-meta { display: none; }
+}
+@media (max-width: 600px) {
+  .portco-breadcrumb {
+    padding: 0.55rem 1rem;
+    margin: -1.5rem -1rem 1.25rem;
+    font-size: 0.58rem;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+  }
+  .portco-breadcrumb-current { font-size: 0.72rem; }
+}
+
+/* Portco health table: drop non-critical columns on phone */
+@media (max-width: 700px) {
+  .portco-table thead th:nth-child(2),  /* HC */
+  .portco-table tbody td:nth-child(2),
+  .portco-table thead th:nth-child(4),  /* TTH */
+  .portco-table tbody td:nth-child(4),
+  .portco-table thead th:nth-child(7),  /* 30d trend */
+  .portco-table tbody td:nth-child(7) { display: none; }
+  .portco-table thead th, .portco-table tbody td { padding: 0.55rem 0.55rem; font-size: 0.6rem; }
+  .portco-name { font-size: 0.72rem; }
+  .portco-meta { font-size: 0.5rem; }
+  .portco-logo { width: 26px; height: 26px; font-size: 0.55rem; }
+}
+
+/* Candidate warmth table: drop stage + strategy columns on phone, keep name/silent/warmth */
+@media (max-width: 700px) {
+  .warmth-table thead th:nth-child(2),  /* Stage */
+  .warmth-table tbody td:nth-child(2),
+  .warmth-table thead th:nth-child(5),  /* Agent strategy */
+  .warmth-table tbody td:nth-child(5) { display: none; }
+  .warmth-table thead th, .warmth-table tbody td { padding: 0.5rem 0.55rem; }
+  .warmth-name { max-width: none; font-size: 0.7rem; }
+  .warmth-role { font-size: 0.52rem; }
+  .warmth-table-wrap { max-height: 420px; }
+}
+
+/* Reduce hero cell padding on small screens so the big numbers still fit */
+@media (max-width: 700px) {
+  .agg-hero-cell, .pattern-hero-cell, .risk-hero-cell, .mobility-hero-cell { padding: 1rem 0.9rem; }
+  .agg-hero-val { font-size: 1.5rem; }
+  .pattern-hero-val, .risk-hero-val { font-size: 1.35rem; }
+  .page-title { font-size: 1.3rem; }
+}
+
+/* Pattern card head: let source + recovery stack cleanly on narrow screens */
+@media (max-width: 700px) {
+  .pattern-card-head { flex-direction: column; align-items: flex-start; }
+  .pattern-card-recovery-sub { text-align: left; }
+  .pattern-flow { flex-direction: column; gap: 0.5rem; }
+  .pattern-flow-label { width: auto; padding-top: 0; }
+}
+
+/* Risk detail card head: let the T−Xd badge wrap under the title */
+@media (max-width: 700px) {
+  .risk-detail-head { flex-direction: column; gap: 0.6rem; }
+  .risk-detail-early { text-align: left; }
+}
+
+/* ═══════════════════════════════════════════
    CANDIDATE WARMTH
    ═══════════════════════════════════════════ */
 
