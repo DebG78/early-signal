@@ -7229,6 +7229,7 @@ document.addEventListener('click', (e) => {
     const v = viewBtn.dataset.view;
     if (v === 'portfolio') { STATE.currentPortco = null; switchScreen('portfolio-overview'); }
     else { switchScreen('overview'); }
+    closeMobileMenu();
     return;
   }
 
@@ -7239,6 +7240,7 @@ document.addEventListener('click', (e) => {
     // Clear company-screen render cache so they re-render with the breadcrumb
     ['overview','funnel','retention','onboarding'].forEach(id => STATE.rendered.delete(id));
     switchScreen('overview');
+    closeMobileMenu();
     return;
   }
 
